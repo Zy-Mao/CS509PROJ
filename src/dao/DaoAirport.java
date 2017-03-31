@@ -20,6 +20,7 @@ import org.xml.sax.SAXException;
 
 import airport.Airport;
 import airport.Airports;
+import dao.DomUtil;
 
 /**
  * @author blake
@@ -41,11 +42,11 @@ public class DaoAirport {
 	 * @post the [possibly empty] set of Airports in the XML string are added to collection
 	 */
 	public static Airports addAll (String xmlAirports) throws NullPointerException {
-		Airports airports = new Airports();
-		
+//		Airports airports = new Airports();
+		Airports airports = Airports.getInstance();
 		// Load the XML string into a DOM tree for ease of processing
 		// then iterate over all nodes adding each airport to our collection
-		Document docAirports = buildDomDoc (xmlAirports);
+		Document docAirports = DomUtil.buildDomDoc(xmlAirports);
 		NodeList nodesAirports = docAirports.getElementsByTagName("Airport");
 		
 		for (int i = 0; i < nodesAirports.getLength(); i++) {
@@ -88,10 +89,10 @@ public class DaoAirport {
 		// The latitude and longitude are child elements
 		Element elementLatLng;
 		elementLatLng = (Element)elementAirport.getElementsByTagName("Latitude").item(0);
-		latitude = Double.parseDouble(getCharacterDataFromElement(elementLatLng));
+		latitude = Double.parseDouble(DomUtil.getCharacterDataFromElement(elementLatLng));
 		
 		elementLatLng = (Element)elementAirport.getElementsByTagName("Longitude").item(0);
-		longitude = Double.parseDouble(getCharacterDataFromElement(elementLatLng));
+		longitude = Double.parseDouble(DomUtil.getCharacterDataFromElement(elementLatLng));
 
 		/**
 		 * Update the Airport object with values from XML node
@@ -104,52 +105,52 @@ public class DaoAirport {
 		return airport;
 	}
 
-	/**
-	 * Builds a DOM tree form an XML string
-	 * 
-	 * Parses the XML file and returns a DOM tree that can be processed
-	 * 
-	 * @param xmlString XML String containing set of objects
-	 * @return DOM tree from parsed XML or null if exception is caught
-	 */
-	static private Document buildDomDoc (String xmlString) {
-		/**
-		 * load the xml string into a DOM document and return the Document
-		 */
-		try {
-			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-			InputSource inputSource = new InputSource();
-			inputSource.setCharacterStream(new StringReader(xmlString));
-			
-			return docBuilder.parse(inputSource);
-		}
-		catch (ParserConfigurationException e) {
-			e.printStackTrace();
-			return null;
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-		catch (SAXException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	/**
-	 * Retrieve character data from an element if it exists
-	 * 
-	 * @param e is the DOM Element to retrieve character data from
-	 * @return the character data as String [possibly empty String]
-	 */
-	private static String getCharacterDataFromElement (Element e) {
-		Node child = e.getFirstChild();
-	    if (child instanceof CharacterData) {
-	        CharacterData cd = (CharacterData) child;
-	        return cd.getData();
-	      }
-	      return "";
-	}
+//	/**
+//	 * Builds a DOM tree form an XML string
+//	 *
+//	 * Parses the XML file and returns a DOM tree that can be processed
+//	 *
+//	 * @param xmlString XML String containing set of objects
+//	 * @return DOM tree from parsed XML or null if exception is caught
+//	 */
+//	static private Document buildDomDoc (String xmlString) {
+//		/**
+//		 * load the xml string into a DOM document and return the Document
+//		 */
+//		try {
+//			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+//			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+//			InputSource inputSource = new InputSource();
+//			inputSource.setCharacterStream(new StringReader(xmlString));
+//
+//			return docBuilder.parse(inputSource);
+//		}
+//		catch (ParserConfigurationException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//		catch (IOException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//		catch (SAXException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
+//
+//	/**
+//	 * Retrieve character data from an element if it exists
+//	 *
+//	 * @param e is the DOM Element to retrieve character data from
+//	 * @return the character data as String [possibly empty String]
+//	 */
+//	private static String getCharacterDataFromElement (Element e) {
+//		Node child = e.getFirstChild();
+//	    if (child instanceof CharacterData) {
+//	        CharacterData cd = (CharacterData) child;
+//	        return cd.getData();
+//	      }
+//	      return "";
+//	}
 }

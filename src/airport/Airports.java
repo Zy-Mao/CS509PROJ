@@ -15,7 +15,26 @@ import java.util.ArrayList;
  *
  */
 public class Airports extends ArrayList<Airport> {
-	private static final long serialVersionUID = 1L;
-	
-	
+//	private static final long serialVersionUID = 1L;
+	private static Airports airports = null;
+	private Airports() {
+
+	}
+
+	public static Airports getInstance() {
+		if (airports == null) {
+			airports = new Airports();
+		}
+		return airports;
+	}
+
+	public Airport getAirportByCode(String code) {
+		for (int i = 0; i < airports.size(); i++) {
+			Airport airport = airports.get(i);
+			if (airport.code().equals(code)) {
+				return airport;
+			}
+		}
+		return null;
+	}
 }

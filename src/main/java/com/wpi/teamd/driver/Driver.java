@@ -1,17 +1,14 @@
 /**
  * 
  */
-package driver;
+package com.wpi.teamd.driver;
 
-import airplane.Airplanes;
-import airport.Airport;
-import airport.Airports;
-import dao.ServerInterface;
-import view.FlightSearchFrame;
+import com.wpi.teamd.airplane.Airplanes;
+import com.wpi.teamd.airport.Airports;
+import com.wpi.teamd.dao.ServerInterface;
+import com.wpi.teamd.view.FlightSearchFrame;
 
 import javax.swing.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author blake

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package dao;
+package com.wpi.teamd.dao;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -12,11 +12,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
 
-import airplane.Airplanes;
-import airport.Airports;
-import flight.Flights;
-import utils.QueryFactory;
-
+import com.wpi.teamd.airplane.Airplanes;
+import com.wpi.teamd.airport.Airports;
+import com.wpi.teamd.flight.Flights;
+import com.wpi.teamd.utils.QueryFactory;
 
 /**
  * This class provides an interface to the CS509 server. It provides sample methods to perform

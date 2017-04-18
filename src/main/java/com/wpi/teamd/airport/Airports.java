@@ -1,7 +1,7 @@
 /**
  * 
  */
-package airport;
+package com.wpi.teamd.airport;
 
 import java.util.ArrayList;
 

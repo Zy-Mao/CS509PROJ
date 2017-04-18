@@ -1,16 +1,16 @@
-package dao;
+package com.wpi.teamd.dao;
 
-import airplane.Airplane;
-import airplane.Airplanes;
-import airport.Airport;
-import airport.Airports;
+import com.wpi.teamd.airplane.Airplane;
+import com.wpi.teamd.airplane.Airplanes;
+import com.wpi.teamd.airport.Airport;
+import com.wpi.teamd.airport.Airports;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import flight.Flight;
-import flight.Flights;
+import com.wpi.teamd.flight.Flight;
+import com.wpi.teamd.flight.Flights;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

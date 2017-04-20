@@ -3,6 +3,9 @@
  */
 package com.wpi.teamd.airport;
 
+import com.wpi.teamd.dao.DaoAirport;
+import com.wpi.teamd.dao.ServerInterface;
+
 import java.util.ArrayList;
 
 /**
@@ -24,6 +27,7 @@ public class Airports extends ArrayList<Airport> {
 	public static Airports getInstance() {
 		if (airports == null) {
 			airports = new Airports();
+			airports = ServerInterface.getAirports();
 		}
 		return airports;
 	}

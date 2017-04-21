@@ -1,4 +1,6 @@
-package com.wpi.teamd.flight;
+package com.wpi.teamd.entity;
+
+import com.wpi.teamd.entity.Flight;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.wpi.teamd.flight;
+package com.wpi.teamd.entity;
 
 /**
  * Created by Mao on 17/3/20.

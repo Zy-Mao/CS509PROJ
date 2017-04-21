@@ -1,6 +1,5 @@
 package com.wpi.teamd.servlet;
 
-import com.wpi.teamd.airport.Airports;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -30,8 +29,8 @@ public class WelcomeServlet extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Airports airports = Airports.getInstance();
-		request.setAttribute("airports", airports);
+//		Airports airports = Airports.getInstance();
+//		request.setAttribute("airports", airports);
 
 		getServletContext().getRequestDispatcher("/WEB-INF/pages/index.jsp").forward(request, response);
 

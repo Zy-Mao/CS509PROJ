@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<%@page import="com.wpi.teamd.airport.Airport" %>
-<%@page import="com.wpi.teamd.airport.Airports" %>
+<%@page import="com.wpi.teamd.entity.Airport" %>
+<%@page import="com.wpi.teamd.service.AirportService" %>
 <%@ page import="java.util.Iterator" %>
-<%@ page import="com.wpi.teamd.airport.Airport" %>
-<% Airports airports = Airports.getInstance(); %>
+<%@ page import="com.wpi.teamd.service.AirplaneService" %>
 
 <html>
 <head>
@@ -48,21 +47,21 @@
 					<div class="w3-half w3-margin-bottom" align="right">
 						<label style="display:block; width: 50%; text-align: left;">Departure Airport</label>
 						<select class="w3-select w3-border" name="departure-airport" style="width: 50%; text-align: left;">
-						<option value="" disabled selected hidden>Select Departure Airport</option>
-						<% for (Iterator iterator = airports.iterator(); iterator.hasNext();) {
-							Airport airport = (Airport) iterator.next();
-						%>
-						<option value="<%=airport.code()%>"><%=airport.name() + ", " + airport.code()%></option>
-						<%
-							}
-						%>
-					</select>
+							<option value="" disabled selected hidden>Select Departure Airport</option>
+							<% for (Iterator iterator = AirportService.getAirportPool().iterator(); iterator.hasNext();) {
+								Airport airport = (Airport) iterator.next();
+							%>
+							<option value="<%=airport.code()%>"><%=airport.name() + ", " + airport.code()%></option>
+							<%
+								}
+							%>
+						</select>
 					</div>
 					<div class="w3-half w3-margin-bottom" align="left">
 						<label style="display:block; width: 50%; text-align: left;">Arrival Airport</label>
 						<select class="w3-select w3-border" name="arrival-airport" style="width: 50%; text-align: left;">
 							<option value="" disabled selected>Select Arrival Airport</option>
-							<% for (Iterator iterator = airports.iterator(); iterator.hasNext();) {
+							<% for (Iterator iterator = AirportService.getAirportPool().iterator(); iterator.hasNext();) {
 								Airport airport = (Airport) iterator.next();
 							%>
 							<option value="<%=airport.code()%>"><%=airport.name() + ", " + airport.code()%></option>
@@ -76,11 +75,13 @@
 				<div class="w3-row-padding" style="margin:8px -16px;">
 					<div class="w3-half w3-margin-bottom" align="right">
 						<label style="display:block; width: 50%; text-align: left;">Departure Date</label>
-						<input class="w3-input w3-border" type="date" name="departure-date" value="2017-05-01" max="2017-05-21" style="width: 50%;">
+						<input class="w3-input w3-border" type="date" name="departure-date"
+							   value="2017-05-05" min="2017-05-05" max="2017-05-21" style="width: 50%;">
 					</div>
 					<div class="w3-half w3-margin-bottom">
-						<label style="display:block; width: 50%; text-align: left;">Arrival Date</label>
-						<input class="w3-input w3-border" type="date" name="arrival-date" value="2017-05-01" max="2017-05-21" style="width: 50%;">
+						<label style="display:block; width: 50%; text-align: left;">Return Date</label>
+						<input class="w3-input w3-border" type="date" name="return-date"
+							   value="2017-05-06" min="2017-05-05" max="2017-05-21" style="width: 50%;">
 					</div>
 				</div>
 			</form>

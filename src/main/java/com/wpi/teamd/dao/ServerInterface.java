@@ -80,7 +80,6 @@ public class ServerInterface {
 		xmlAirports = result.toString();
 		airports = DaoAirport.addAll(xmlAirports);
 		return airports;
-		
 	}
 
 	public static Airplanes getAirplanes () {

@@ -87,8 +87,8 @@
 
 				<div class="w3-row-padding" style="margin:8px -16px;">
 					<div class="w3-half w3-margin-bottom" align="right">
-						<label for="departure-airport" style="display:block; width: 50%; text-align: left;">Departure Airport</label>
-						<select class="selectpicker w3-border" id="departure-airport" name="departure-airport"
+						<label style="display:block; width: 50%; text-align: left;">Departure Airport</label>
+						<select class="selectpicker w3-border" name="departure-airport"
 								data-live-search="true" title="Select departure airport..."
 								data-width="50%" data-show-subtext="true">
 							<% for (Airport airport : AirportService.getAirportPool()) {
@@ -135,19 +135,19 @@
 
 				<div class="w3-row-padding" style="margin:8px -16px;">
 					<div class="w3-half w3-margin-bottom" align="right">
-						<label style="display:block; width: 50%; text-align: left;">Stop Over Times</label>
-						<select class="selectpicker" data-width="50%">
-							<option>0 Stop</option>
-							<option>1 Stop</option>
-							<option>2 Stop</option>
+						<label style="display:block; width: 50%; text-align: left;">Max Stop Over Times</label>
+						<select class="selectpicker" name="stop-over-times" data-width="50%">
+							<option value="0" selected>0 Stop</option>
+							<option value="1">1 Stop</option>
+							<option value="2">2 Stop</option>
 						</select>
 					</div>
 					<div class="w3-half w3-margin-bottom" align="left">
 						<label style="display:block; width: 50%; text-align: left;">Sort By</label>
-						<select class="selectpicker" data-width="50%">
-							<option>Duration</option>
-							<option>Price</option>
-							<option>StopOver</option>
+						<select class="selectpicker" name="sort-option" data-width="50%">
+							<option value="price" selected>Price</option>
+							<option value="duration">Duration</option>
+							<option value="stop-over-times">Max Stop Over Times</option>
 						</select>
 					</div>
 				</div>

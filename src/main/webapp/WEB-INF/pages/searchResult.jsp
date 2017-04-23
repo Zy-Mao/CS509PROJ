@@ -31,7 +31,7 @@
 	<h5>Recent Users</h5>
 	<ul class="w3-ul w3-card-4 w3-white">
 
-		<%	for (Flights flights : (ArrayList<Flights>) request.getAttribute("flights-list")) {
+		<%	for (Flights flights : (ArrayList<Flights>) request.getAttribute("departure-flights-list")) {
 			for (Map.Entry<Flight, Integer> entry : flights.entrySet()) {
 				Flight flight = entry.getKey();
 		%>

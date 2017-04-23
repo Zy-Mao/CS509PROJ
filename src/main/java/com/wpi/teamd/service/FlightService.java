@@ -20,11 +20,30 @@ public class FlightService {
 
 	}
 
-	public static ArrayList<Flights> searchFlightsWithNoLeg(Airport departureAirport, Airport arrivalAirport,
-															Date departureDate, Boolean isDeparting,
-															Integer seatClass) {
+	public static ArrayList<Flights> searchFlights(Integer seatClass,
+												   Airport departureAirport, Airport arrivalAirport,
+												   Date departureDate,
+												   Integer stopOverTimes, String sortOption
+												   ) {
 		ArrayList<Flights> flightsList = new ArrayList<>();
-		ArrayList<Flight> flightPool = ServerInterface.getFlightPool(departureAirport.code(), departureDate, isDeparting);
+		switch (stopOverTimes) {
+			case 2:
+				flightsList.addAll(searchFlightsWithTwoStop(seatClass, departureAirport, arrivalAirport, departureDate));
+			case 1:
+				flightsList.addAll(searchFlightsWithOneStop(seatClass, departureAirport, arrivalAirport, departureDate));
+			case 0:
+			default:
+				flightsList.addAll(searchFlightsWithNoStop(seatClass, departureAirport, arrivalAirport, departureDate));
+		}
+		//TODO sort option
+		return flightsList;
+	}
+
+	private static ArrayList<Flights> searchFlightsWithNoStop(Integer seatClass,
+															Airport departureAirport, Airport arrivalAirport,
+															Date departureDate) {
+		ArrayList<Flights> flightsList = new ArrayList<>();
+		ArrayList<Flight> flightPool = ServerInterface.getFlightPool(departureAirport.code(), departureDate, true);
 		for (Flight flight : flightPool) {
 			if (flight.getArrivalAirport().equals(arrivalAirport)
 					&& flight.getSeatsInfoByClass(seatClass) > 0) {
@@ -36,26 +55,63 @@ public class FlightService {
 		return flightsList;
 	}
 
-	public static ArrayList<Flights> searchFlightsWithOneLeg(Airport departureAirport, Airport arrivalAirport,
-															 Date departureDate, Boolean isDeparting,
-															 Integer seatClass) {
+	private static ArrayList<Flights> searchFlightsWithOneStop(Integer seatClass,
+															 Airport departureAirport, Airport arrivalAirport,
+															 Date departureDate) {
 		ArrayList<Flights> flightsList = new ArrayList<>();
-		ArrayList<Flight> firstFlightPool = ServerInterface.getFlightPool(departureAirport.code(), departureDate, isDeparting);
+		ArrayList<Flight> firstFlightPool = ServerInterface.getFlightPool(departureAirport.code(), departureDate, true);
 		for (Flight firstFlight : firstFlightPool) {
 			if (firstFlight.getSeatsInfoByClass(seatClass) <= 0) {
 				continue;
 			}
 			ArrayList<Flight> secondFlightPool
-					= ServerInterface.getFlightPool(firstFlight.getArrivalAirport().code(), departureDate, isDeparting);
+					= ServerInterface.getFlightPool(firstFlight.getArrivalAirport().code(), departureDate, true);
 			for (Flight secondFlight : secondFlightPool) {
-				if (secondFlight.getArrivalAirport().equals(arrivalAirport)
-						&& checkFlightsTimeInterval(secondFlight, firstFlight)
-						&& firstFlight.getSeatsInfoByClass(seatClass) > 0
-						&& secondFlight.getSeatsInfoByClass(seatClass) > 0) {
+				if (secondFlight.getSeatsInfoByClass(seatClass) <= 0
+						|| !checkFlightsTimeInterval(secondFlight, firstFlight)) {
+					continue;
+				}
+				if (secondFlight.getArrivalAirport().equals(arrivalAirport)) {
 					Flights flights = new Flights();
 					flights.put(firstFlight, seatClass);
 					flights.put(secondFlight, seatClass);
 					flightsList.add(flights);
+				}
+			}
+		}
+		return flightsList;
+	}
+
+	private static ArrayList<Flights> searchFlightsWithTwoStop(Integer seatClass,
+															 Airport departureAirport, Airport arrivalAirport,
+															 Date departureDate) {
+		ArrayList<Flights> flightsList = new ArrayList<>();
+		ArrayList<Flight> firstFlightPool = ServerInterface.getFlightPool(departureAirport.code(), departureDate, true);
+		for (Flight firstFlight : firstFlightPool) {
+			if (firstFlight.getSeatsInfoByClass(seatClass) <= 0) {
+				continue;
+			}
+			ArrayList<Flight> secondFlightPool
+					= ServerInterface.getFlightPool(firstFlight.getArrivalAirport().code(), departureDate, true);
+			for (Flight secondFlight : secondFlightPool) {
+				if (secondFlight.getSeatsInfoByClass(seatClass) <= 0
+						|| !checkFlightsTimeInterval(secondFlight, firstFlight)) {
+					continue;
+				}
+				ArrayList<Flight> thirdFlightPool
+						= ServerInterface.getFlightPool(secondFlight.getArrivalAirport().code(), departureDate, true);
+				for (Flight thirdFlight : thirdFlightPool) {
+					if (thirdFlight.getSeatsInfoByClass(seatClass) <= 0
+							|| !checkFlightsTimeInterval(thirdFlight, secondFlight)) {
+						continue;
+					}
+					if (thirdFlight.getArrivalAirport().equals(arrivalAirport)) {
+						Flights flights = new Flights();
+						flights.put(firstFlight, seatClass);
+						flights.put(secondFlight, seatClass);
+						flights.put(thirdFlight, seatClass);
+						flightsList.add(flights);
+				}
 				}
 			}
 		}

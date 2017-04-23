@@ -26,32 +26,42 @@ public class SearchServlet extends HttpServlet {
 	private static Logger logger = LogManager.getLogger(SearchServlet.class);
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Boolean roundTrip = request.getParameter("trip-route") != null
+				&& request.getParameter("trip-route").equals("round-trip");
+		Integer seatClass = request.getParameter("seat-class") != null
+				&& request.getParameter("seat-class").equals("first-class") ? 1 : 2;
 		String departureAirportCode = request.getParameter("departure-airport");
 		String arrivalAirportCode = request.getParameter("arrival-airport");
 		String departureDateString = request.getParameter("departure-date");
 		String returnDateString = request.getParameter("return-date");
-		Integer seatClass = request.getParameter("seat-class") != null
-				&& request.getParameter("seat-class").equals("first-class") ? 1 : 2;
-		Date departureDate = null;
-		Date returnDate = null;
-		logger.debug(departureAirportCode);
-		logger.debug(departureDateString);
-
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat ("yyyy-MM-dd");
-		try {
-			departureDate = simpleDateFormat.parse(departureDateString);
-			returnDate = simpleDateFormat.parse(returnDateString);
-		} catch (ParseException e) {
-			logger.debug(e.getMessage());
-		}
+		Integer stopOverTimes = request.getParameter("stop-over-times") != null ?
+				Integer.parseInt(request.getParameter("stop-over-times")) : 0;
+		String sortOption = request.getParameter("sort-option");
+		if (sortOption == null) sortOption = "price";
 
 		Airport departureAirport = AirportService.getAirportByCode(departureAirportCode);
 		Airport arrivalAirport = AirportService.getAirportByCode(arrivalAirportCode);
 
-		ArrayList<Flights> flightsList = FlightService.searchFlightsWithNoLeg
-				(departureAirport, arrivalAirport, departureDate, true, seatClass);
+		Date departureDate = null;
+		Date returnDate = null;
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat ("yyyy-MM-dd");
+		try {
+			departureDate = simpleDateFormat.parse(departureDateString);
+			returnDate = returnDateString != null ? simpleDateFormat.parse(returnDateString) : null;
+		} catch (ParseException e) {
+			logger.debug(e.getMessage());
+		}
 
-		request.setAttribute("flights-list", flightsList);
+		ArrayList<Flights> departureFlightsList = FlightService.searchFlights
+				(seatClass, departureAirport, arrivalAirport, departureDate, stopOverTimes, sortOption);
+		request.setAttribute("departure-flights-list", departureFlightsList);
+
+		if (roundTrip && returnDate != null) {
+			ArrayList<Flights> returnFlightsList = FlightService.searchFlights
+					(seatClass, arrivalAirport, departureAirport, returnDate, stopOverTimes, sortOption);
+			request.setAttribute("return-flights-list", returnFlightsList);
+		}
+
 		getServletContext().getRequestDispatcher("/WEB-INF/pages/searchResult.jsp").forward(request, response);
 	}
 

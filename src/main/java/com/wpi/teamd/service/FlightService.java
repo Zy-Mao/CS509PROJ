@@ -1,6 +1,5 @@
 package com.wpi.teamd.service;
 
-import com.wpi.teamd.dao.DaoFlight;
 import com.wpi.teamd.dao.ServerInterface;
 import com.wpi.teamd.entity.Airport;
 import com.wpi.teamd.entity.Flight;
@@ -11,13 +10,12 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Date;
 
-/**
+/*
  * Created by mao on 2017/4/21.
  */
 public class FlightService {
 	private static Logger logger = LogManager.getLogger(FlightService.class);
 	private FlightService() {
-
 	}
 
 	public static ArrayList<Flights> searchFlights(Integer seatClass,
@@ -60,18 +58,17 @@ public class FlightService {
 															 Date departureDate) {
 		ArrayList<Flights> flightsList = new ArrayList<>();
 		ArrayList<Flight> firstFlightPool = ServerInterface.getFlightPool(departureAirport.code(), departureDate, true);
+		ArrayList<Flight> secondFlightPool = ServerInterface.getFlightPool(arrivalAirport.code(), departureDate, false);
 		for (Flight firstFlight : firstFlightPool) {
 			if (firstFlight.getSeatsInfoByClass(seatClass) <= 0) {
 				continue;
 			}
-			ArrayList<Flight> secondFlightPool
-					= ServerInterface.getFlightPool(firstFlight.getArrivalAirport().code(), departureDate, true);
 			for (Flight secondFlight : secondFlightPool) {
 				if (secondFlight.getSeatsInfoByClass(seatClass) <= 0
 						|| !checkFlightsTimeInterval(secondFlight, firstFlight)) {
 					continue;
 				}
-				if (secondFlight.getArrivalAirport().equals(arrivalAirport)) {
+				if (secondFlight.getDepartAirport().equals(firstFlight.getArrivalAirport())) {
 					Flights flights = new Flights();
 					flights.put(firstFlight, seatClass);
 					flights.put(secondFlight, seatClass);
@@ -87,6 +84,7 @@ public class FlightService {
 															 Date departureDate) {
 		ArrayList<Flights> flightsList = new ArrayList<>();
 		ArrayList<Flight> firstFlightPool = ServerInterface.getFlightPool(departureAirport.code(), departureDate, true);
+		ArrayList<Flight> thirdFlightPool = ServerInterface.getFlightPool(arrivalAirport.code(), departureDate, false);
 		for (Flight firstFlight : firstFlightPool) {
 			if (firstFlight.getSeatsInfoByClass(seatClass) <= 0) {
 				continue;
@@ -98,14 +96,12 @@ public class FlightService {
 						|| !checkFlightsTimeInterval(secondFlight, firstFlight)) {
 					continue;
 				}
-				ArrayList<Flight> thirdFlightPool
-						= ServerInterface.getFlightPool(secondFlight.getArrivalAirport().code(), departureDate, true);
 				for (Flight thirdFlight : thirdFlightPool) {
 					if (thirdFlight.getSeatsInfoByClass(seatClass) <= 0
 							|| !checkFlightsTimeInterval(thirdFlight, secondFlight)) {
 						continue;
 					}
-					if (thirdFlight.getArrivalAirport().equals(arrivalAirport)) {
+					if (thirdFlight.getDepartAirport().equals(secondFlight.getArrivalAirport())) {
 						Flights flights = new Flights();
 						flights.put(firstFlight, seatClass);
 						flights.put(secondFlight, seatClass);

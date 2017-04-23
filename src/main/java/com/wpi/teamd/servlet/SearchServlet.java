@@ -30,6 +30,8 @@ public class SearchServlet extends HttpServlet {
 		String arrivalAirportCode = request.getParameter("arrival-airport");
 		String departureDateString = request.getParameter("departure-date");
 		String returnDateString = request.getParameter("return-date");
+		Integer seatClass = request.getParameter("seat-class") != null
+				&& request.getParameter("seat-class").equals("first-class") ? 1 : 2;
 		Date departureDate = null;
 		Date returnDate = null;
 		logger.debug(departureAirportCode);
@@ -47,7 +49,7 @@ public class SearchServlet extends HttpServlet {
 		Airport arrivalAirport = AirportService.getAirportByCode(arrivalAirportCode);
 
 		ArrayList<Flights> flightsList = FlightService.searchFlightsWithNoLeg
-				(departureAirport, arrivalAirport, departureDate, true);
+				(departureAirport, arrivalAirport, departureDate, true, seatClass);
 
 		request.setAttribute("flights-list", flightsList);
 		getServletContext().getRequestDispatcher("/WEB-INF/pages/searchResult.jsp").forward(request, response);

@@ -167,4 +167,8 @@ public class Flight {
     public void setCoachClassSeats(int coachClassSeats) {
         this.coachClassSeats = coachClassSeats;
     }
+
+    public int getSeatsInfoByClass(Integer seatClass) {
+        return seatClass == 1 ? this.getFirstClassSeats() : this.getCoachClassSeats();
+    }
 }

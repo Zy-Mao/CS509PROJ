@@ -26,17 +26,21 @@ public class SearchServlet extends HttpServlet {
 	private static Logger logger = LogManager.getLogger(SearchServlet.class);
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Boolean roundTrip = request.getParameter("trip-route") != null
-				&& request.getParameter("trip-route").equals("round-trip");
-		Integer seatClass = request.getParameter("seat-class") != null
-				&& request.getParameter("seat-class").equals("first-class") ? 1 : 2;
-		String departureAirportCode = request.getParameter("departure-airport");
-		String arrivalAirportCode = request.getParameter("arrival-airport");
-		String departureDateString = request.getParameter("departure-date");
-		String returnDateString = request.getParameter("return-date");
-		Integer stopOverTimes = request.getParameter("stop-over-times") != null ?
-				Integer.parseInt(request.getParameter("stop-over-times")) : 0;
-		String sortOption = request.getParameter("sort-option");
+
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Boolean roundTrip = request.getParameter("tr") != null
+				&& request.getParameter("tr").equals("2");
+		Integer seatClass = request.getParameter("sc") != null
+				&& request.getParameter("sc").equals("1") ? 1 : 2;
+		String departureAirportCode = request.getParameter("dp");
+		String arrivalAirportCode = request.getParameter("ar");
+		String departureDateString = request.getParameter("dd");
+		String returnDateString = request.getParameter("rd");
+		Integer stopOverTimes = request.getParameter("sp") != null ?
+				Integer.parseInt(request.getParameter("sp")) : 0;
+		String sortOption = request.getParameter("st");
 		if (sortOption == null) sortOption = "price";
 
 		Airport departureAirport = AirportService.getAirportByCode(departureAirportCode);
@@ -62,10 +66,7 @@ public class SearchServlet extends HttpServlet {
 			request.setAttribute("return-flights-list", returnFlightsList);
 		}
 
+		logger.debug(1);
 		getServletContext().getRequestDispatcher("/WEB-INF/pages/searchResult.jsp").forward(request, response);
-	}
-
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 	}
 }

@@ -3,12 +3,13 @@
  */
 package com.wpi.teamd.dao;
 
-import com.wpi.teamd.airport.Airport;
-import com.wpi.teamd.airport.Airports;
+import com.wpi.teamd.entity.Airport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import java.util.ArrayList;
 
 /**
  * @author blake
@@ -29,9 +30,8 @@ public class DaoAirport {
 	 * @pre the xmlAirports string adheres to the format specified by the server API
 	 * @post the [possibly empty] set of Airports in the XML string are added to collection
 	 */
-	public static Airports addAll (String xmlAirports) throws NullPointerException {
-//		Airports airports = new Airports();
-		Airports airports = Airports.getInstance();
+	public static ArrayList<Airport> addAll (String xmlAirports) throws NullPointerException {
+		ArrayList<Airport> airportPool = new ArrayList<>();
 		// Load the XML string into a DOM tree for ease of processing
 		// then iterate over all nodes adding each airport to our collection
 		Document docAirports = DomUtil.buildDomDoc(xmlAirports);
@@ -42,11 +42,11 @@ public class DaoAirport {
 			Airport airport = buildAirport (elementAirport);
 			
 			if (airport.isValid()) {
-				airports.add(airport);
+				airportPool.add(airport);
 			}
 		}
 		
-		return airports;
+		return airportPool;
 	}
 
 	/**
@@ -92,53 +92,4 @@ public class DaoAirport {
 		
 		return airport;
 	}
-
-//	/**
-//	 * Builds a DOM tree form an XML string
-//	 *
-//	 * Parses the XML file and returns a DOM tree that can be processed
-//	 *
-//	 * @param xmlString XML String containing set of objects
-//	 * @return DOM tree from parsed XML or null if exception is caught
-//	 */
-//	static private Document buildDomDoc (String xmlString) {
-//		/**
-//		 * load the xml string into a DOM document and return the Document
-//		 */
-//		try {
-//			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-//			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-//			InputSource inputSource = new InputSource();
-//			inputSource.setCharacterStream(new StringReader(xmlString));
-//
-//			return docBuilder.parse(inputSource);
-//		}
-//		catch (ParserConfigurationException e) {
-//			e.printStackTrace();
-//			return null;
-//		}
-//		catch (IOException e) {
-//			e.printStackTrace();
-//			return null;
-//		}
-//		catch (SAXException e) {
-//			e.printStackTrace();
-//			return null;
-//		}
-//	}
-//
-//	/**
-//	 * Retrieve character data from an element if it exists
-//	 *
-//	 * @param e is the DOM Element to retrieve character data from
-//	 * @return the character data as String [possibly empty String]
-//	 */
-//	private static String getCharacterDataFromElement (Element e) {
-//		Node child = e.getFirstChild();
-//	    if (child instanceof CharacterData) {
-//	        CharacterData cd = (CharacterData) child;
-//	        return cd.getData();
-//	      }
-//	      return "";
-//	}
 }

@@ -1,25 +1,30 @@
 package com.wpi.teamd.dao;
 
-import com.wpi.teamd.airplane.Airplane;
-import com.wpi.teamd.airplane.Airplanes;
-import com.wpi.teamd.airport.Airport;
-import com.wpi.teamd.airport.Airports;
+import com.wpi.teamd.entity.Airplane;
+import com.wpi.teamd.entity.Airport;
+import com.wpi.teamd.service.AirplaneService;
+import com.wpi.teamd.service.AirportService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.wpi.teamd.flight.Flight;
-import com.wpi.teamd.flight.Flights;
+import com.wpi.teamd.entity.Flight;
+import com.wpi.teamd.entity.Flights;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Mao on 2017/2/22.
  */
 public class DaoFlight {
+	private static Logger logger = LogManager.getLogger(DaoFlight.class);
     /**
      * Builds collection of flights from flights described in XML
      *
@@ -34,8 +39,8 @@ public class DaoFlight {
      * @pre the xmlFlights string adheres to the format specified by the server API
      * @post the [possibly empty] set of Flights in the XML string are added to collection
      */
-    public static Flights addAll (String xmlFlights) throws NullPointerException {
-        Flights flights = new Flights();
+    public static ArrayList<Flight> addAll (String xmlFlights) throws NullPointerException {
+        ArrayList<Flight> flightPool = new ArrayList<>();
 
         // Load the XML string into a DOM tree for ease of processing
         // then iterate over all nodes adding each flight to our collection
@@ -47,10 +52,10 @@ public class DaoFlight {
             Flight flight = buildFlight (elementFlight);
 
             if (flight.isValid()) {
-                flights.add(flight);
+                flightPool.add(flight);
             }
         }
-        return flights;
+        return flightPool;
     }
 
     /**
@@ -83,33 +88,31 @@ public class DaoFlight {
         // The flight element has attributes of Name and 3 character flight code
         Element elementFlight = (Element) nodeFlight;
 
-        Airplanes airplanes = Airplanes.getInstance();
-        airplane = airplanes.getAirplaneByModel(elementFlight.getAttributeNode("Airplane").getValue());
+        airplane = AirplaneService.getAirplaneByModel(elementFlight.getAttributeNode("Airplane").getValue());
         flightTime = Integer.parseInt(elementFlight.getAttributeNode("FlightTime").getValue());
         number = elementFlight.getAttributeNode("Number").getValue();
 
         Element elementAttr;
-        Airports airports = Airports.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM dd HH:mm zzz");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM dd HH:mm zzz", Locale.ENGLISH);
 
         Element elementDeparture = (Element)elementFlight.getElementsByTagName("Departure").item(0);
         elementAttr = (Element)elementDeparture.getElementsByTagName("Code").item(0);
-        departAirport = airports.getAirportByCode(DomUtil.getCharacterDataFromElement(elementAttr));
+        departAirport = AirportService.getAirportByCode(DomUtil.getCharacterDataFromElement(elementAttr));
         elementAttr = (Element)elementDeparture.getElementsByTagName("Time").item(0);
         try {
             departTime = sdf.parse(DomUtil.getCharacterDataFromElement(elementAttr));
         } catch (ParseException e) {
-
+        	logger.debug(e.getMessage());
         }
 
         Element elementArrival = (Element)elementFlight.getElementsByTagName("Arrival").item(0);
         elementAttr = (Element)elementArrival.getElementsByTagName("Code").item(0);
-        arrivalAirport = airports.getAirportByCode(DomUtil.getCharacterDataFromElement(elementAttr));
+        arrivalAirport = AirportService.getAirportByCode(DomUtil.getCharacterDataFromElement(elementAttr));
         elementAttr = (Element)elementArrival.getElementsByTagName("Time").item(0);
         try {
             arrivalTime = sdf.parse(DomUtil.getCharacterDataFromElement(elementAttr));
         } catch (ParseException e) {
-
+			logger.debug(e.getMessage());
         }
 
         Element elementSeating = (Element)elementFlight.getElementsByTagName("Seating").item(0);
@@ -117,13 +120,13 @@ public class DaoFlight {
         Element elementFirstClass = (Element)elementSeating.getElementsByTagName("FirstClass").item(0);
         String price = elementFirstClass.getAttributeNode("Price").getValue().substring(1);
         price = price.replace(",", "");
-        firstClassPrice = Double.parseDouble(price.substring(1));
+        firstClassPrice = Double.parseDouble(price);
         firstClassSeats = Integer.parseInt(DomUtil.getCharacterDataFromElement(elementFirstClass));
 
         Element elementCoachClass = (Element)elementSeating.getElementsByTagName("Coach").item(0);
         price = elementCoachClass.getAttributeNode("Price").getValue().substring(1);
         price = price.replace(",", "");
-        coachClassPrice = Double.parseDouble(price.substring(1));
+        coachClassPrice = Double.parseDouble(price);
         coachClassSeats = Integer.parseInt(DomUtil.getCharacterDataFromElement(elementCoachClass));
         // The latitude and longitude are child elements
 

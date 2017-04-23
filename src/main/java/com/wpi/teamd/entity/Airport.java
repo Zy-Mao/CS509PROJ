@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.wpi.teamd.airport;
+package com.wpi.teamd.entity;
 
 import com.wpi.teamd.utils.Saps;
 

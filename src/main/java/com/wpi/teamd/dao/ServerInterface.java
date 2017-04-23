@@ -10,12 +10,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 
-import com.wpi.teamd.airplane.Airplanes;
-import com.wpi.teamd.airport.Airports;
-import com.wpi.teamd.flight.Flights;
+import com.wpi.teamd.entity.Airplane;
+import com.wpi.teamd.entity.Airport;
+import com.wpi.teamd.entity.Flight;
+import com.wpi.teamd.entity.Flights;
 import com.wpi.teamd.utils.QueryFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class provides an interface to the CS509 server. It provides sample methods to perform
@@ -27,6 +31,8 @@ import com.wpi.teamd.utils.QueryFactory;
  *
  */
 public class ServerInterface {
+	private static Logger logger = LogManager.getLogger(ServerInterface.class);
+
 	private static final String mUrlBase = "http://cs509.cs.wpi.edu:8181/CS509.server/ReservationSystem";
 	private static final String teamName = "TeamD";
 	/**
@@ -34,9 +40,9 @@ public class ServerInterface {
 	 * 
 	 * Retrieve the list of airports available to the specified ticketAgency via HTTPGet of the server
 	 *
-	 * @return collection of Airports from server
+	 * @return collection of Airport from server
 	 */
-	public static Airports getAirports () {
+	public static ArrayList<Airport> getAirportPool () {
 		URL url;
 		HttpURLConnection connection;
 		BufferedReader reader;
@@ -44,13 +50,13 @@ public class ServerInterface {
 		StringBuffer result = new StringBuffer();
 
 		String xmlAirports;
-		Airports airports;
+		ArrayList<Airport> airportPool;
 
 		try {
 			/**
 			 * Create an HTTP connection to the server for a GET 
 			 */
-			url = new URL(mUrlBase + QueryFactory.getAirports(teamName));
+			url = new URL(mUrlBase + QueryFactory.getAirportPool(teamName));
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", teamName);
@@ -63,9 +69,11 @@ public class ServerInterface {
 			if (responseCode >= HttpURLConnection.HTTP_OK) {
 				InputStream inputStream = connection.getInputStream();
 				String encoding = connection.getContentEncoding();
-				encoding = (encoding == null ? "UTF-8" : encoding);
+				// Workaround for encoding problem.
+				encoding = "ISO-8859-1";
+//				encoding = (encoding == null ? "UTF-8" : encoding);
 
-				reader = new BufferedReader(new InputStreamReader(inputStream));
+				reader = new BufferedReader(new InputStreamReader(inputStream, encoding));
 				while ((line = reader.readLine()) != null) {
 					result.append(line);
 				}
@@ -78,11 +86,11 @@ public class ServerInterface {
 		}
 
 		xmlAirports = result.toString();
-		airports = DaoAirport.addAll(xmlAirports);
-		return airports;
+		airportPool = DaoAirport.addAll(xmlAirports);
+		return airportPool;
 	}
 
-	public static Airplanes getAirplanes () {
+	public static ArrayList<Airplane> getAirplanePool () {
 		URL url;
 		HttpURLConnection connection;
 		BufferedReader reader;
@@ -90,13 +98,13 @@ public class ServerInterface {
 		StringBuffer result = new StringBuffer();
 
 		String xmlAirplanes;
-		Airplanes airplanes;
+		ArrayList<Airplane> airplanePool;
 
 		try {
 			/**
 			 * Create an HTTP connection to the server for a GET
 			 */
-			url = new URL(mUrlBase + QueryFactory.getAirplanes(teamName));
+			url = new URL(mUrlBase + QueryFactory.getAirplanePool(teamName));
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", teamName);
@@ -124,11 +132,11 @@ public class ServerInterface {
 		}
 
 		xmlAirplanes = result.toString();
-		airplanes = DaoAirplane.addAll(xmlAirplanes);
-		return airplanes;
+		airplanePool = DaoAirplane.addAll(xmlAirplanes);
+		return airplanePool;
 	}
 
-	public static Flights getFlights(String airportCode, Date day, Boolean isDeparting) {
+	public static ArrayList<Flight> getFlightPool(String airportCode, Date day, Boolean isDeparting) {
 		URL url;
 		HttpURLConnection connection;
 		BufferedReader reader;
@@ -136,14 +144,15 @@ public class ServerInterface {
 		StringBuffer result = new StringBuffer();
 
 		String xmlFlights;
-		Flights flights;
+		ArrayList<Flight> flightPool;
 
 		try {
 			/**
 			 * Create an HTTP connection to the server for a GET
 			 */
 //			url = new URL(mUrlBase + QueryFactory.getAirplanes(teamName));
-			url = new URL(mUrlBase + QueryFactory.getFlights(teamName, airportCode, day, isDeparting));
+			url = new URL(mUrlBase + QueryFactory.getFlightPool(teamName, airportCode, day, isDeparting));
+			logger.debug(url);
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", teamName);
@@ -171,8 +180,8 @@ public class ServerInterface {
 		}
 
 		xmlFlights = result.toString();
-		flights = DaoFlight.addAll(xmlFlights);
-		return flights;
+		flightPool = DaoFlight.addAll(xmlFlights);
+		return flightPool;
 	}
 
 	/**

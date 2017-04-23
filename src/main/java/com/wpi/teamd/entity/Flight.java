@@ -1,7 +1,7 @@
-package com.wpi.teamd.flight;
+package com.wpi.teamd.entity;
 
-import com.wpi.teamd.airplane.Airplane;
-import com.wpi.teamd.airport.Airport;
+import com.wpi.teamd.entity.Airplane;
+import com.wpi.teamd.entity.Airport;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -166,5 +166,9 @@ public class Flight {
 
     public void setCoachClassSeats(int coachClassSeats) {
         this.coachClassSeats = coachClassSeats;
+    }
+
+    public int getSeatsInfoByClass(Integer seatClass) {
+        return seatClass == 1 ? this.getFirstClassSeats() : this.getCoachClassSeats();
     }
 }

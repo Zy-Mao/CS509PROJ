@@ -1,11 +1,12 @@
 package com.wpi.teamd.dao;
 
-import com.wpi.teamd.airplane.Airplane;
-import com.wpi.teamd.airplane.Airplanes;
+import com.wpi.teamd.entity.Airplane;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import java.util.ArrayList;
 
 /**
  * Created by Mao on 17/3/19.
@@ -19,15 +20,15 @@ public class DaoAirplane {
      * from XML to Java primitives.
      *
      * @param xmlAirplanes XML string containing set of airplanes
-     * @return [possibly empty] collection of Airplanes in the xml string
+     * @return [possibly empty] collection of AirplaneList in the xml string
      * @throws NullPointerException included to keep signature consistent with other addAll methods
      *
      * @pre the xmlAirplanes string adheres to the format specified by the server API
-     * @post the [possibly empty] set of Airplanes in the XML string are added to collection
+     * @post the [possibly empty] set of AirplaneList in the XML string are added to collection
      */
-    public static Airplanes addAll (String xmlAirplanes) throws NullPointerException {
-//        Airplanes airplanes = new Airplanes();
-        Airplanes airplanes = Airplanes.getInstance();
+    public static ArrayList<Airplane> addAll (String xmlAirplanes) throws NullPointerException {
+//        AirplaneList airplaneList = new AirplaneList();
+        ArrayList<Airplane> airplanePool = new ArrayList<>();
         // Load the XML string into a DOM tree for ease of processing
         // then iterate over all nodes adding each airplane to our collection
         Document docAirplanes = DomUtil.buildDomDoc(xmlAirplanes);
@@ -38,11 +39,11 @@ public class DaoAirplane {
             Airplane airplane = buildAirplane (elementAirplane);
 
             if (airplane.isValid()) {
-                airplanes.add(airplane);
+                airplanePool.add(airplane);
             }
         }
 
-        return airplanes;
+        return airplanePool;
     }
 
     /**

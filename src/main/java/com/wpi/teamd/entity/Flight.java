@@ -1,8 +1,5 @@
 package com.wpi.teamd.entity;
 
-import com.wpi.teamd.entity.Airplane;
-import com.wpi.teamd.entity.Airport;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -56,9 +53,7 @@ public class Flight {
             return false;
         if (firstClassPrice < 0 || firstClassSeats < 0)
             return false;
-        if (coachClassPrice < 0 || coachClassSeats < 0)
-            return false;
-        return true;
+        return !(coachClassPrice < 0 || coachClassSeats < 0);
     }
 
     public String toString() {
@@ -170,5 +165,14 @@ public class Flight {
 
     public int getSeatsInfoByClass(Integer seatClass) {
         return seatClass == 1 ? this.getFirstClassSeats() : this.getCoachClassSeats();
+    }
+
+    public long getDurationInSecond() {
+        return (getArrivalTime().getTime() - getDepartTime().getTime()) / 1000;
+    }
+
+    public String getDurationInString() {
+        long duration = this.getDurationInSecond();
+        return (duration / 3600) + " hour " + ((duration / 60) % 60) + " min";
     }
 }

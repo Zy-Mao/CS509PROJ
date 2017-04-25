@@ -1,6 +1,7 @@
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="com.wpi.teamd.entity.Flights" %>
 <%@ page import="com.wpi.teamd.entity.Flight" %>
+<%@ page import="com.wpi.teamd.entity.Flights" %>
+<%@ page import="com.wpi.teamd.service.AirportService" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Map" %>
 <%--
   Created by IntelliJ IDEA.
@@ -21,34 +22,110 @@
 		html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 	</style>
 </head>
-<body class="w3-light-grey">
+<%--<body class="w3-light-grey">--%>
 
 <body>
 
 <jsp:include page="/index.jsp" flush="true"/>
 
-<div class="w3-container">
-	<h5>Recent Users</h5>
-	<ul class="w3-ul w3-card-4 w3-white">
 
-		<%	for (Flights flights : (ArrayList<Flights>) request.getAttribute("departure-flights-list")) {
-			for (Map.Entry<Flight, Integer> entry : flights.entrySet()) {
-				Flight flight = entry.getKey();
-		%>
-		<li>
-			<%=flight.getDepartAirport().code()%>, <%=flight.getArrivalAirport().code()%>
-			<%=flight.getDepartTime()%>, <%=flight.getArrivalTime()%>
-		</li>
+<h3 align="center">Search Result From
+	<%=AirportService.getAirportByCode(request.getParameter("dp")).toString()%> To
+	<%=AirportService.getAirportByCode(request.getParameter("ar")).toString()%>
+</h3>
+<div class="panel-group">
+	<div class="panel panel-default">
 		<%
-				}
+			int count = 1;
+			for (Flights flights : (ArrayList<Flights>) request.getAttribute("departure-flights-list")) {
+		%>
+		<style>
+			.w3-card-2 {
+				/*border: 1px solid black;*/
+				margin: 15px 15px 15px 15px;
+			}
+
+			.w3-button {
+				background-color: #66afe9;
+			}
+		</style>
+		<div class="panel-heading w3-card-2" data-toggle="collapse" data-target="<%="#departure-flight-" + count%>">
+			<div class="panel-title">
+				<div class="w3-panel" style="text-align:center">
+					<div class="w3-quarter"><%= flights.getStopTimes() + " Stop"%>
+					</div>
+					<div class="w3-quarter"><%= flights.getDepartureTime() + " - " + flights.getArrivalTime()%>
+					</div>
+					<div class="w3-quarter"><%= flights.getDurationInString()%>
+					</div>
+					<div class="w3-quarter">
+						<button class="w3-button w3-round" id="<%="#departure-flight-button-" + count%>">
+							<%= "$" + String.format("%.2f", flights.getTotalPrice())%>
+						</button>
+						<script>
+							$("#").click(function () {
+								//TODO
+								alert("Handler for .click() called.");
+							});
+						</script>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="<%="departure-flight-" + count%>" class="panel-collapse collapse w3-card-2">
+			<ul class="list-group">
+				<%
+					for (Map.Entry<Flight, Integer> entry : flights.entrySet()) {
+						Flight flight = entry.getKey();
+				%>
+				<li class="list-group-item">
+					<div class="w3-row-padding" style="text-align:center">
+						<div class="w3-quarter">
+							<p><%="Flight #" + flight.getNumber()%>
+							</p>
+							<p><%=flight.getAirplane().getManufacture() + " " + flight.getAirplane().getModel()%>
+							</p>
+							<p><%=flight.getFlightTime()%>
+							</p>
+						</div>
+						<div class="w3-quarter">
+							<p><%=flight.getDepartAirport().code() + " - " + flight.getArrivalAirport().code()%>
+							</p>
+							<p><%=flight.getDepartTime() + " - " + flight.getArrivalTime()%>
+							</p>
+						</div>
+						<div class="w3-quarter">
+							<p><%=flight.getDurationInString()%>
+							</p>
+						</div>
+						<div class="w3-quarter">
+							<%="$" + String.format("%.2f",
+									(entry.getValue() == 1 ? flight.getFirstClassPrice() : flight.getCoachClassPrice()))%>
+						</div>
+					</div>
+				</li>
+				<%
+					}
+				%>
+				<%--<div class="panel-footer">Footer</div>--%>
+			</ul>
+
+		</div>
+
+		<%
+				count++;
 			}
 		%>
-		<%--<li class="w3-padding-16">--%>
-			<%--<img src="/w3images/avatar2.png" class="w3-left w3-circle w3-margin-right" style="width:35px">--%>
-			<%--<span class="w3-xlarge">Mike</span><br>--%>
-		<%--</li>--%>
-	</ul>
+	</div>
 </div>
+
+
+<%--<script>--%>
+<%--$('.majorpoint').click(function(){--%>
+<%--$(document).find('.hider').toggle();--%>
+<%--});--%>
+<%--</script>--%>
 
 
 </body>

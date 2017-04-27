@@ -1,6 +1,6 @@
 package com.wpi.teamd.entity;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -9,22 +9,32 @@ import java.util.Map;
  */
 public class Flights extends LinkedHashMap<Flight, Integer> {
 
+	public ArrayList<Flight> getFlightsList() {
+		ArrayList<Flight> flightsList = new ArrayList<>();
+		for (Map.Entry<Flight, Integer> entry : this.entrySet()) {
+			Flight flight = entry.getKey();
+			flightsList.add(flight);
+		}
+		return flightsList;
+	}
+
+
 	public int getStopTimes() {
 		return this.size() - 1;
 	}
 
-	public Date getDepartureTime() {
-		return ((Flight) this.keySet().toArray()[0]).getDepartTime();
+	public String getDepartureTimeInString() {
+		return ((Flight) this.keySet().toArray()[0]).getDepartTimeInString(true);
 
 	}
 
-	public Date getArrivalTime() {
-		return ((Flight) this.keySet().toArray()[this.size() - 1]).getArrivalTime();
+	public String getArrivalTimeInString() {
+		return ((Flight) this.keySet().toArray()[this.size() - 1]).getArrivalTimeInString(true);
 	}
 
 	public long getDurationInSecond() {
-		return (((Flight) this.keySet().toArray()[this.size() - 1]).getArrivalTime().getTime()
-				- ((Flight) this.keySet().toArray()[0]).getDepartTime().getTime()) / 1000;
+		return (((Flight) this.keySet().toArray()[this.size() - 1]).getArrivalTime(false).getTime()
+				- ((Flight) this.keySet().toArray()[0]).getDepartTime(false).getTime()) / 1000;
 	}
 
 	public String getDurationInString() {

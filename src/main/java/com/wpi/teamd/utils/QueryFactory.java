@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author blake
@@ -51,7 +53,7 @@ public class QueryFactory {
 	public static String lock (String teamName) {
 		return "team=" + teamName + "&action=lockDB";
 	}
-	
+
 	/**
 	 * Unlock the server database after updates are written
 	 * 
@@ -61,6 +63,15 @@ public class QueryFactory {
 	public static String unlock (String teamName) {
 		return "team=" + teamName + "&action=unlockDB";
 	}
-	
 
+	public static String reserveSeat(String teamName, LinkedHashMap<String, String> flightsOrderList) {
+		String params = "team=" + teamName + "&action=buyTickets&flightData=<Flights>";
+		for (Map.Entry<String, String> entry : flightsOrderList.entrySet()) {
+			params += "<Flight number=\"" + entry.getKey() + "\" seating=\"" +
+					(entry.getValue().equals("1") ? "FirstClass" : "Coach") + "\"/>";
+		}
+		params += "</Flights>";
+		logger.debug(params);
+		return params;
+	}
 }

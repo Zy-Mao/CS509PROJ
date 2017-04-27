@@ -8,7 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-import java.util.Date;
 
 /*
  * Created by mao on 2017/4/21.
@@ -145,8 +144,12 @@ public class FlightService {
 	}
 
 	private static Boolean checkFlightsTimeInterval(Flight secondFlight, Flight firstFlight) {
-		long timeInterval = secondFlight.getDepartTime().getTime() - firstFlight.getArrivalTime().getTime();
+		long timeInterval = secondFlight.getDepartTime(false).getTime() - firstFlight.getArrivalTime(false).getTime();
 		/*Check the time interval, it must between 30 mins and 4 hours.*/
 		return (timeInterval / 1000 / 60 >= 30 && timeInterval / 1000 / 60 / 60 <= 4);
+	}
+
+	public static Boolean reserveSeat(LinkedHashMap<String, String> flightsOrderList) {
+		return ServerInterface.reserveSeat(flightsOrderList);
 	}
 }

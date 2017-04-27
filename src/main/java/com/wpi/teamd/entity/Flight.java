@@ -1,5 +1,7 @@
 package com.wpi.teamd.entity;
 
+import com.wpi.teamd.utils.TimeZoneMap;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -107,9 +109,14 @@ public class Flight {
         this.departAirport = departAirport;
     }
 
-    public Date getDepartTime() {
-        return departTime;
-    }
+	public Date getDepartTime(Boolean isLocal) {
+		return departTime;
+	}
+
+	public String getDepartTimeInString(Boolean isLocal) {
+		return TimeZoneMap.getFormattedTime(
+				getDepartTime(false), getDepartAirport().latitude(), getDepartAirport().longitude(), isLocal);
+	}
 
     public void setDepartTime(Date departTime) {
         this.departTime = departTime;
@@ -123,9 +130,14 @@ public class Flight {
         this.arrivalAirport = arrivalAirport;
     }
 
-    public Date getArrivalTime() {
-        return arrivalTime;
-    }
+	public Date getArrivalTime(Boolean isLocal) {
+		return arrivalTime;
+	}
+
+	public String getArrivalTimeInString(Boolean isLocal) {
+		return TimeZoneMap.getFormattedTime(
+				getArrivalTime(true), getArrivalAirport().latitude(), getArrivalAirport().longitude(), isLocal);
+	}
 
     public void setArrivalTime(Date arrivalTime) {
         this.arrivalTime = arrivalTime;
@@ -164,12 +176,13 @@ public class Flight {
     }
 
     public int getSeatsInfoByClass(Integer seatClass) {
-        return seatClass == 1 ? this.getFirstClassSeats() : this.getCoachClassSeats();
-    }
+		return seatClass == 1 ? this.getAirplane().getFirstClassSeat() - getFirstClassSeats()
+				: this.getAirplane().getCoachClassSeat() - getCoachClassSeats();
+	}
 
     public long getDurationInSecond() {
-        return (getArrivalTime().getTime() - getDepartTime().getTime()) / 1000;
-    }
+		return (getArrivalTime(false).getTime() - getDepartTime(false).getTime()) / 1000;
+	}
 
     public String getDurationInString() {
         long duration = this.getDurationInSecond();

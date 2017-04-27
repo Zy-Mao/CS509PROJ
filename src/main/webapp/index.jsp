@@ -33,8 +33,8 @@
 	
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<!--  <link rel="stylesheet" href="/resources/demos/style.css">   -->
-	
-	<script src="your-path/icheck.js"></script>
+
+	<%--<script src="your-path/icheck.js"></script>--%>
 
 </head>
 
@@ -220,7 +220,7 @@
 					<div class="w3-quarter w3-container"></div>
 					<div class="w3-quarter w3-container">
 						<p>
-         					<label style = "font-size-adjust = 0.5;" for = "dep_time">Time Window:</label>
+							<label style="font-size-adjust: 0.5;" for="dep_time">Time Window:</label>
          					<input type = "text" id = "dep_time" readonly = "true"
             					style = "font-weight:bold; color:#006000; width:120px; height:30px">
       					</p>

@@ -30,6 +30,7 @@ public class SearchServlet extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 		Boolean roundTrip = request.getParameter("tr") != null
 				&& request.getParameter("tr").equals("2");
 		Integer seatClass = request.getParameter("sc") != null
@@ -66,7 +67,7 @@ public class SearchServlet extends HttpServlet {
 			request.setAttribute("return-flights-list", returnFlightsList);
 		}
 
-		logger.debug(1);
+//		logger.debug(1);
 		getServletContext().getRequestDispatcher("/WEB-INF/pages/searchResult.jsp").forward(request, response);
 	}
 }

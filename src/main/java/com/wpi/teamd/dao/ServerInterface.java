@@ -3,23 +3,19 @@
  */
 package com.wpi.teamd.dao;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import com.wpi.teamd.entity.Airplane;
+import com.wpi.teamd.entity.Airport;
+import com.wpi.teamd.entity.Flight;
+import com.wpi.teamd.utils.QueryFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
-
-import com.wpi.teamd.entity.Airplane;
-import com.wpi.teamd.entity.Airport;
-import com.wpi.teamd.entity.Flight;
-import com.wpi.teamd.entity.Flights;
-import com.wpi.teamd.utils.QueryFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.LinkedHashMap;
 
 /**
  * This class provides an interface to the CS509 server. It provides sample methods to perform
@@ -152,7 +148,7 @@ public class ServerInterface {
 			 */
 //			url = new URL(mUrlBase + QueryFactory.getAirplanes(teamName));
 			url = new URL(mUrlBase + QueryFactory.getFlightPool(teamName, airportCode, day, isDeparting));
-			logger.debug(url);
+//			logger.debug(url);
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", teamName);
@@ -238,7 +234,7 @@ public class ServerInterface {
 	 *
 	 * @return true if the server was successfully unlocked.
 	 */
-	public boolean unlock () {
+	public static boolean unlock() {
 		URL url;
 		HttpURLConnection connection;
 
@@ -280,6 +276,59 @@ public class ServerInterface {
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	public static Boolean reserveSeat(LinkedHashMap<String, String> flightsOrderList) {
+		URL url;
+		HttpURLConnection connection;
+		int responseCode = 0;
+
+		try {
+			url = new URL(mUrlBase);
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("POST");
+
+			String params = QueryFactory.reserveSeat(teamName, flightsOrderList);
+
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+
+			DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
+			writer.writeBytes(params);
+			writer.flush();
+			writer.close();
+
+			responseCode = connection.getResponseCode();
+			System.out.println("\nSending 'POST' to reserve seat");
+			System.out.println(("\nResponse Code : " + responseCode));
+			logger.debug("\nResponse Code : " + responseCode);
+
+			if (responseCode >= HttpURLConnection.HTTP_OK) {
+				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				String line;
+				StringBuffer response = new StringBuffer();
+
+				while ((line = in.readLine()) != null) {
+					response.append(line);
+				}
+				in.close();
+
+				System.out.println(response.toString());
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			if (responseCode == HttpURLConnection.HTTP_PRECON_FAILED) {
+				return false;
+			}
+			return false;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			if (responseCode == HttpURLConnection.HTTP_PRECON_FAILED) {
+				return false;
+			}
 			return false;
 		}
 		return true;

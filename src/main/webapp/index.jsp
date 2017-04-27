@@ -108,13 +108,14 @@
 						<button class="w3-button w3-small w3-black w3-round-xxlarge" type="button" onclick="hide_reveal()" >timeWindow</button>
 						<script>
 							function hide_reveal(){
-								var hidden = document.getElementById("time-window").style.display;
-								if (hidden == "none"){
-									$( "#time-window" ).show();
-								}
-								else{
-									$( "#time-window" ).hide();
-								}
+								$( "#time-window" ).slideToggle();
+								//var hidden = document.getElementById("time-window").style.display;
+								//if (hidden == "none"){
+								//	$( "#time-window" ).show();
+								//}
+								//else{
+								//	$( "#time-window" ).hide();
+								//}
 							}
 						</script>
 					</div>
@@ -215,12 +216,12 @@
 				</script>
       			
 					
-				<div class="w3-row" style="margin:8px -16px; display:none" id = time-window>
+				<div class="w3-row" style="margin:4px -16px; display:none" id = time-window>
 					<div class="w3-quarter w3-container"></div>
 					<div class="w3-quarter w3-container">
 						<p>
          					<label style = "font-size-adjust = 0.5;" for = "dep_time">Time Window:</label>
-         					<input type = "text" id = "dep_time" 
+         					<input type = "text" id = "dep_time" readonly = "true"
             					style = "font-weight:bold; color:#006000; width:120px; height:30px">
       					</p>
       					<div id = "slider-range"></div>
@@ -228,7 +229,7 @@
 					<div class="w3-quarter w3-container">
 						<p>
          					<label for = "ret_time">Time Window:</label>
-         					<input type = "text" id = "ret_time" 
+         					<input type = "text" id = "ret_time" readonly = "true"
             					style = "font-weight:bold; color:#5B00AE; width:120px; height:30px">
       					</p>
       					<div id = "slider-range2"></div>
@@ -257,9 +258,9 @@
 						%>
 						<label style="display:block; width: 50%; text-align: left;">Sort By</label>
 						<select class="selectpicker" name="st" data-width="50%">
-							<option value="price" <%= selected_sp.equals("price") ? "selected" : ""%>>Price</option>
-							<option value="duration" <%= selected_sp.equals("duration") ? "selected" : ""%>>Duration</option>
-							<option value="stop" <%= selected_sp.equals("stop") ? "selected" : ""%>>Max Stop Over Times</option>
+							<option value="price" <%= selected_st.equals("price") ? "selected" : ""%>>Price</option>
+							<option value="duration" <%= selected_st.equals("duration") ? "selected" : ""%>>Duration</option>
+							<option value="stop" <%= selected_st.equals("stop") ? "selected" : ""%>>Max Stop Over Times</option>
 						</select>
 					</div>
 					

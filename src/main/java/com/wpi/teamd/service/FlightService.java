@@ -7,7 +7,7 @@ import com.wpi.teamd.entity.Flights;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Date;
 
 /*
@@ -33,7 +33,37 @@ public class FlightService {
 			default:
 				flightsList.addAll(searchFlightsWithNoStop(seatClass, departureAirport, arrivalAirport, departureDate));
 		}
-		//TODO sort option
+		
+		//Sort option. add by Tang on 2017/4/27
+		
+		if(sortOption.equals("price")){
+			Collections.sort(flightsList, new Comparator<Flights>() {
+				@Override public int compare(Flights flight2, Flights flight1){
+				 	Double f1_price = flight1.getTotalPrice();
+				 	Double f2_price = flight2.getTotalPrice();
+				 	return f2_price.compareTo(f1_price);
+			 		}
+			});
+		}
+		else if (sortOption.equals("duration")){
+			Collections.sort(flightsList, new Comparator<Flights>() {
+				@Override public int compare(Flights flight2, Flights flight1){
+					Long f1_duration = flight1.getDurationInSecond();
+					Long f2_duration = flight2.getDurationInSecond();
+					return f2_duration.compareTo(f1_duration);
+				 	}
+			});
+		}
+		else{
+			Collections.sort(flightsList, new Comparator<Flights>() {
+				@Override public int compare(Flights flight2, Flights flight1){
+					Integer f1_stops = flight1.getStopTimes();
+					Integer f2_stops = flight2.getStopTimes();
+					return f2_stops.compareTo(f1_stops);
+				 	}
+			});
+		}
+		
 		return flightsList;
 	}
 

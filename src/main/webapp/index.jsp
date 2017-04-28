@@ -169,7 +169,7 @@
 						%>
 						<label style="display:block; width: 50%; text-align: left;">Return Date</label>
 						<input class="w3-input w3-border" type="date" name="rd" id="return-date"
-							   value="<%=returnDate != null ? returnDate : "2017-05-15"%>"
+							   value="<%=returnDate != null ? returnDate : "2017-05-12"%>"
 							<%=tripRoute == null || tripRoute.equals("1") ? "disabled" : "" %>
 							   style="width: 50%; color: <%=tripRoute == null || tripRoute.equals("1") ? "grey" : "black" %>">
 					</div>
@@ -283,10 +283,13 @@
 					var dd = document.getElementById("depart-date").value;
 					var rd = document.getElementById("return-date").value;
 
-					if(rd>dd){
+					if ($("#return-date").prop('disabled') == true) {
 						document.getElementById("search-form").submit();
 					}
-					else if (true) {
+					else if (rd > dd) {
+						document.getElementById("search-form").submit();
+					}
+					else if (rd == dd) {
 						if (confirm("Your departure date and return date is on the same day. \n Are you still want to search?") == true){
 							document.getElementById("search-form").submit();
 						}

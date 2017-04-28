@@ -306,6 +306,10 @@ public class ServerInterface {
 			System.out.println(("\nResponse Code : " + responseCode));
 			logger.debug("\nResponse Code : " + responseCode);
 
+			if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) {
+				return false;
+			}
+
 			if (responseCode >= HttpURLConnection.HTTP_OK) {
 				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 				String line;

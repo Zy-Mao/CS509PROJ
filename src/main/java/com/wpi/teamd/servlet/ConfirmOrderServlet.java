@@ -3,6 +3,8 @@ package com.wpi.teamd.servlet;
 import com.wpi.teamd.service.FlightService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
@@ -23,31 +26,8 @@ public class ConfirmOrderServlet extends HttpServlet {
 		LinkedHashMap<String, String> flightsOrderList = new LinkedHashMap<>();
 		String responseText = "";
 
-
-		if (request.getParameter("dpFlightNo1") != null && !request.getParameter("dpFlightNo1").equals("")
-				&& request.getParameter("dpFlightSeatClass1") != null && !request.getParameter("dpFlightSeatClass1").equals("")) {
-			flightsOrderList.put(request.getParameter("dpFlightNo1"), request.getParameter("dpFlightSeatClass1"));
-		}
-		if (request.getParameter("dpFlightNo2") != null && !request.getParameter("dpFlightNo2").equals("")
-				&& request.getParameter("dpFlightSeatClass2") != null && !request.getParameter("dpFlightSeatClass2").equals("")) {
-			flightsOrderList.put(request.getParameter("dpFlightNo2"), request.getParameter("dpFlightSeatClass2"));
-		}
-		if (request.getParameter("dpFlightNo3") != null && !request.getParameter("dpFlightNo3").equals("")
-				&& request.getParameter("dpFlightSeatClass3") != null && !request.getParameter("dpFlightSeatClass3").equals("")) {
-			flightsOrderList.put(request.getParameter("dpFlightNo3"), request.getParameter("dpFlightSeatClass3"));
-		}
-		if (request.getParameter("rtFlightNo1") != null && !request.getParameter("rtFlightNo1").equals("")
-				&& request.getParameter("rtFlightSeatClass1") != null && !request.getParameter("rtFlightSeatClass1").equals("")) {
-			flightsOrderList.put(request.getParameter("rtFlightNo1"), request.getParameter("rtFlightSeatClass1"));
-		}
-		if (request.getParameter("rtFlightNo2") != null && !request.getParameter("rtFlightNo2").equals("")
-				&& request.getParameter("rtFlightSeatClass2") != null && !request.getParameter("rtFlightSeatClass2").equals("")) {
-			flightsOrderList.put(request.getParameter("rtFlightNo2"), request.getParameter("rtFlightSeatClass2"));
-		}
-		if (request.getParameter("rtFlightNo3") != null && !request.getParameter("rtFlightNo3").equals("")
-				&& request.getParameter("rtFlightSeatClass3") != null && !request.getParameter("rtFlightSeatClass3").equals("")) {
-			flightsOrderList.put(request.getParameter("rtFlightNo3"), request.getParameter("rtFlightSeatClass3"));
-		}
+		buildFlightsList(flightsOrderList, request.getParameter("departureFlights"));
+		buildFlightsList(flightsOrderList, request.getParameter("returnFlights"));
 
 		if (FlightService.reserveSeat((flightsOrderList))) {
 			responseText = "Order success.";
@@ -60,5 +40,16 @@ public class ConfirmOrderServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+	}
+
+	private void buildFlightsList(HashMap<String, String> flightsOrderList, String inputJsonString) {
+		logger.debug(inputJsonString);
+		JSONArray jsonArray = new JSONArray(inputJsonString);
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject jsonObject = jsonArray.getJSONObject(i);
+			String flightNo = jsonObject.getString("flightNo");
+			String flightSeatClass = Integer.toString(jsonObject.getInt("flightSeatClass"));
+			flightsOrderList.put(flightNo, flightSeatClass);
+		}
 	}
 }

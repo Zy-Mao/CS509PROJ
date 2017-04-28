@@ -22,12 +22,10 @@
 		html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 	</style>
 	<script>
-		var selectedDepartureFlightNo = [];
-		var selectedDepartureFlightSeatClass = [];
+		var selectedDepartureFlightsList = [];
+		var selectedReturnFlightsList = [];
 		var selectedDepartureTotalPrice = 0.0;
-		var selectedReturnFlightsNo = [];
-		var selectedReturnFlightsSeatClass = [];
-		var selectedRetutnTotalPrice = 0.0;
+		var selectedReturnTotalPrice = 0.0;
 		var getLock = 0;
 		var secondCount = 0;
 		var refreshIntervalId;
@@ -39,19 +37,17 @@
 			$('#selected-departure-flights').hide();
 			$('#selected-return-flights').hide();
 			$('#flights-summary-panel').hide();
-			selectedDepartureFlightNo = [];
-			selectedDepartureFlightSeatClass = [];
+			selectedDepartureFlightsList = [];
 			selectedDepartureTotalPrice = 0.0;
 		}
 
 		function deselectReturnFlights() {
-			$("#departure-flights-group").show();
+//			$("#departure-flights-group").show();
 			$("#return-flights-group").show();
 			$('#selected-return-flights').hide();
 			$('#flights-summary-panel').hide();
-			selectedReturnFlightsNo = [];
-			selectedReturnFlightsSeatClass = [];
-			selectedRetutnTotalPrice = 0.0;
+			selectedReturnFlightsList = [];
+			selectedReturnTotalPrice = 0.0;
 		}
 
 		function lockOperation() {
@@ -99,38 +95,30 @@
 			}
 		}
 
-		var url = "path/to/your/script.php"; // the script where you handle the form input.
-
-		function submitForm() {
-			var form = $('#order-form');
+		function submitOrder() {
 			$.ajax({
 				type: "POST",
-				url: form.attr('action'),
-				data: form.serialize(),
-				success: function (response) {
-//					$("#message-paragraph").text(response)
-					console.log(response);
+				url: "/ConfirmOrder",
+				data: {
+					departureFlights: JSON.stringify(selectedDepartureFlightsList),
+					returnFlights: JSON.stringify(selectedReturnFlightsList)
+				},
+				success: function (responseText) {
+					$.ajax({
+						type: "POST",
+						url: "/UnlockSeat",
+						success: function (responseText) {
+							getLock = 0;
+							$("#confirm-order-button").prop('disabled', true);
+							$("#lock-operation-button").text("Lock Seat");
+							clearInterval(refreshIntervalId);
+							secondCount = 0;
+						}
+					});
+					$("#message-paragraph").text(responseText);
 				}
+
 			});
-		}
-
-		function SubmitOrder() {
-//			for (var i = 0; i < selectedReturnFlightsNo.length; i++) {
-//
-//			}
-//			for (var i = 0; i < selectedReturnFlightsNo.length; i++) {
-//
-//			}
-
-//			$.post("ConfirmOrder",
-//				{
-//					dpFlightNo1:1 <= selectedDepartureFlightNo.length ? selectedDepartureFlightNo[0] : "",
-//					dpFlightNo2:2 <= selectedDepartureFlightNo.length ? selectedDepartureFlightNo[1] : "",
-//					dpFlightNo3:3 <= selectedDepartureFlightNo.length ? selectedDepartureFlightNo[2] : "",
-//					rtFlightNo1:1 <= selectedReturnFlightsNo.length ? selectedReturnFlightsNo[0] : "",
-//					rtFlightNo2:2 <= selectedReturnFlightsNo.length ? selectedReturnFlightsNo[1] : "",
-//					rtFlightNo3:3 <= selectedReturnFlightsNo.length ? selectedReturnFlightsNo[2] : ""
-//				});
 		}
 
 		function getUrlParameters() {
@@ -306,20 +294,6 @@
 		</div>
 	</div>
 </div>
-<form action="ConfirmOrder" id="order-form" method="post">
-	<input type="hidden" id="dpFlightNo1-field" name="dpFlightNo1">
-	<input type="hidden" id="dpFlightNo2-field" name="dpFlightNo2">
-	<input type="hidden" id="dpFlightNo3-field" name="dpFlightNo3">
-	<input type="hidden" id="rtFlightNo1-field" name="rtFlightNo1">
-	<input type="hidden" id="rtFlightNo2-field" name="rtFlightNo2">
-	<input type="hidden" id="rtFlightNo3-field" name="rtFlightNo3">
-	<input type="hidden" id="dpFlightSeatClass1-field" name="dpFlightSeatClass1">
-	<input type="hidden" id="dpFlightSeatClass2-field" name="dpFlightSeatClass2">
-	<input type="hidden" id="dpFlightSeatClass3-field" name="dpFlightSeatClass3">
-	<input type="hidden" id="rtFlightSeatClass1-field" name="rtFlightSeatClass1">
-	<input type="hidden" id="rtFlightSeatClass2-field" name="rtFlightSeatClass2">
-	<input type="hidden" id="rtFlightSeatClass3-field" name="rtFlightSeatClass3">
-</form>
 <div class="panel-group" id="flights-summary-panel">
 	<div class="panel panel-default">
 		<div class="panel-heading w3-card-2">
@@ -337,8 +311,7 @@
 						</button>
 					</div>
 					<div class="w3-quarter">
-						<button class="w3-button w3-round" id="confirm-order-button" type="submit" form="order-form"
-								disabled>
+						<button class="w3-button w3-round" id="confirm-order-button" onclick="submitOrder()" disabled>
 							Confirm Order
 						</button>
 					</div>
@@ -414,8 +387,11 @@
 								$('#selected-departure-flights').find(".selected-departure-flights-sub-panel").each(function () {
 									if (loopCount < flightList.length) {
 										var flight = flightList[loopCount];
-										selectedDepartureFlightNo.push(flight.flightNo);
-										selectedDepartureFlightSeatClass.push(flight.flightSeatClass);
+										var flightInfo = {
+											flightNo: flight.flightNo,
+											flightSeatClass: flight.flightSeatClass,
+										};
+										selectedDepartureFlightsList.push(flightInfo);
 										$(this).find('.airplane-info-div').html(
 											'<p>' + 'Flight #' + flight.flightNo + '</p>' +
 											'<p>' + flight.flightManufacture + ' ' + flight.flightModel + '</p>' +
@@ -452,19 +428,6 @@
 								} else {
 									$("#return-flights-group").show();
 								}
-
-								$("#dpFlightNo1-field").val(1 <= selectedDepartureFlightNo.length ? selectedDepartureFlightNo[0] : "");
-								$("#dpFlightNo2-field").val(2 <= selectedDepartureFlightNo.length ? selectedDepartureFlightNo[1] : "");
-								$("#dpFlightNo3-field").val(3 <= selectedDepartureFlightNo.length ? selectedDepartureFlightNo[2] : "");
-								$("#dpFlightSeatClass1-field").val(1 <= selectedDepartureFlightSeatClass.length ? selectedDepartureFlightSeatClass[0] : "");
-								$("#dpFlightSeatClass2-field").val(2 <= selectedDepartureFlightSeatClass.length ? selectedDepartureFlightSeatClass[1] : "");
-								$("#dpFlightSeatClass3-field").val(3 <= selectedDepartureFlightSeatClass.length ? selectedDepartureFlightSeatClass[2] : "");
-								$("#rtFlightNo1-field").val(1 <= selectedReturnFlightsNo.length ? selectedReturnFlightsNo[0] : "");
-								$("#rtFlightNo2-field").val(2 <= selectedReturnFlightsNo.length ? selectedReturnFlightsNo[1] : "");
-								$("#rtFlightNo3-field").val(3 <= selectedReturnFlightsNo.length ? selectedReturnFlightsNo[2] : "");
-								$("#rtFlightSeatClass1-field").val(1 <= selectedReturnFlightsSeatClass.length ? selectedReturnFlightsSeatClass[0] : "");
-								$("#rtFlightSeatClass2-field").val(2 <= selectedReturnFlightsSeatClass.length ? selectedReturnFlightsSeatClass[1] : "");
-								$("#rtFlightSeatClass3-field").val(3 <= selectedReturnFlightsSeatClass.length ? selectedReturnFlightsSeatClass[2] : "");
 							}
 						</script>
 					</div>
@@ -593,8 +556,11 @@
 								$('#selected-return-flights').find(".selected-return-flights-sub-panel").each(function () {
 									if (loopCount < flightList.length) {
 										var flight = flightList[loopCount];
-										selectedReturnFlightsNo.push(flight.flightNo);
-										selectedReturnFlightsSeatClass.push(flight.flightSeatClass);
+										var flightInfo = {
+											flightNo: flight.flightNo,
+											flightSeatClass: flight.flightSeatClass,
+										};
+										selectedReturnFlightsList.push(flightInfo);
 										$(this).find('.airplane-info-div').html(
 											'<p>' + 'Flight #' + flight.flightNo + '</p>' +
 											'<p>' + flight.flightManufacture + ' ' + flight.flightModel + '</p>' +
@@ -620,26 +586,13 @@
 								$('#selected-return-flights').show();
 
 								var urlParams = getUrlParameters();
-								selectedRetutnTotalPrice = flightTotalPrice;
-								totalPrice = selectedDepartureTotalPrice + selectedRetutnTotalPrice;
+								selectedReturnTotalPrice = flightTotalPrice;
+								totalPrice = selectedDepartureTotalPrice + selectedReturnTotalPrice;
 								$("#flights-summary-panel").show();
 								$("#total-price-panel").html(
 									'<p>' + 'Total Price' + '</p>' +
 									'<p>' + totalPrice.toFixed(2) + '</p>'
 								);
-
-								$("#dpFlightNo1-field").val(1 <= selectedDepartureFlightNo.length ? selectedDepartureFlightNo[0] : "");
-								$("#dpFlightNo2-field").val(2 <= selectedDepartureFlightNo.length ? selectedDepartureFlightNo[1] : "");
-								$("#dpFlightNo3-field").val(3 <= selectedDepartureFlightNo.length ? selectedDepartureFlightNo[2] : "");
-								$("#dpFlightSeatClass1-field").val(1 <= selectedDepartureFlightSeatClass.length ? selectedDepartureFlightSeatClass[0] : "");
-								$("#dpFlightSeatClass2-field").val(2 <= selectedDepartureFlightSeatClass.length ? selectedDepartureFlightSeatClass[1] : "");
-								$("#dpFlightSeatClass3-field").val(3 <= selectedDepartureFlightSeatClass.length ? selectedDepartureFlightSeatClass[2] : "");
-								$("#rtFlightNo1-field").val(1 <= selectedReturnFlightsNo.length ? selectedReturnFlightsNo[0] : "");
-								$("#rtFlightNo2-field").val(2 <= selectedReturnFlightsNo.length ? selectedReturnFlightsNo[1] : "");
-								$("#rtFlightNo3-field").val(3 <= selectedReturnFlightsNo.length ? selectedReturnFlightsNo[2] : "");
-								$("#rtFlightSeatClass1-field").val(1 <= selectedReturnFlightsSeatClass.length ? selectedReturnFlightsSeatClass[0] : "");
-								$("#rtFlightSeatClass2-field").val(2 <= selectedReturnFlightsSeatClass.length ? selectedReturnFlightsSeatClass[1] : "");
-								$("#rtFlightSeatClass3-field").val(3 <= selectedReturnFlightsSeatClass.length ? selectedReturnFlightsSeatClass[2] : "");
 							}
 
 						</script>

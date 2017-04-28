@@ -28,6 +28,10 @@
 		var selectedReturnFlightsNo = [];
 		var selectedReturnFlightsSeatClass = [];
 		var selectedRetutnTotalPrice = 0.0;
+		var getLock = 0;
+		var secondCount = 0;
+		var refreshIntervalId;
+		var maxLockTime = 120;
 
 		function deselectDepartureFlights() {
 			$("#departure-flights-group").show();
@@ -50,8 +54,67 @@
 			selectedRetutnTotalPrice = 0.0;
 		}
 
-		function SubmitOrder() {
+		function lockOperation() {
+			if (getLock == 0) {
+				$.ajax({
+					type: "POST",
+					url: "/LockSeat",
+					success: function (responseText) {
+						getLock = 1;
+						$("#lock-operation-button").text("Cancel");
+						$("#confirm-order-button").prop('disabled', false);
+						refreshIntervalId = setInterval(function () {
+							secondCount += 1;
+							$("#message-paragraph").text("Seat locked, " + (maxLockTime - secondCount) + " seconds remain...");
+							if (secondCount >= maxLockTime) {
+								$("#confirm-order-button").prop('disabled', true);
+								clearInterval(refreshIntervalId);
+								$.ajax({
+									type: "POST",
+									url: "/UnlockSeat",
+									success: function (responseText) {
+										getLock = 0;
+										$("#lock-operation-button").text("Lock Seat");
+									}
+								});
+								$("#message-paragraph").text("Seat lock released.");
+								secondCount = 0;
+							}
+						}, 1000)
+					}
+				});
+			} else {
+				$.ajax({
+					type: "POST",
+					url: "/UnlockSeat",
+					success: function (responseText) {
+						getLock = 0;
+						$("#confirm-order-button").prop('disabled', true);
+						$("#lock-operation-button").text("Lock Seat");
+						clearInterval(refreshIntervalId);
+						$("#message-paragraph").text("Seat lock released.");
+						secondCount = 0;
+					}
+				});
+			}
+		}
 
+		var url = "path/to/your/script.php"; // the script where you handle the form input.
+
+		function submitForm() {
+			var form = $('#order-form');
+			$.ajax({
+				type: "POST",
+				url: form.attr('action'),
+				data: form.serialize(),
+				success: function (response) {
+//					$("#message-paragraph").text(response)
+					console.log(response);
+				}
+			});
+		}
+
+		function SubmitOrder() {
 //			for (var i = 0; i < selectedReturnFlightsNo.length; i++) {
 //
 //			}
@@ -243,36 +306,39 @@
 		</div>
 	</div>
 </div>
-
+<form action="ConfirmOrder" id="order-form" method="post">
+	<input type="hidden" id="dpFlightNo1-field" name="dpFlightNo1">
+	<input type="hidden" id="dpFlightNo2-field" name="dpFlightNo2">
+	<input type="hidden" id="dpFlightNo3-field" name="dpFlightNo3">
+	<input type="hidden" id="rtFlightNo1-field" name="rtFlightNo1">
+	<input type="hidden" id="rtFlightNo2-field" name="rtFlightNo2">
+	<input type="hidden" id="rtFlightNo3-field" name="rtFlightNo3">
+	<input type="hidden" id="dpFlightSeatClass1-field" name="dpFlightSeatClass1">
+	<input type="hidden" id="dpFlightSeatClass2-field" name="dpFlightSeatClass2">
+	<input type="hidden" id="dpFlightSeatClass3-field" name="dpFlightSeatClass3">
+	<input type="hidden" id="rtFlightSeatClass1-field" name="rtFlightSeatClass1">
+	<input type="hidden" id="rtFlightSeatClass2-field" name="rtFlightSeatClass2">
+	<input type="hidden" id="rtFlightSeatClass3-field" name="rtFlightSeatClass3">
+</form>
 <div class="panel-group" id="flights-summary-panel">
 	<div class="panel panel-default">
 		<div class="panel-heading w3-card-2">
 			<div class="panel-title">
 				<div class="w3-panel" style="text-align:center">
 					<div class="w3-quarter">
-						<p></p>
-					</div>
-					<div class="w3-quarter">
-						<p></p>
+						<p id="message-paragraph"></p>
 					</div>
 					<div class="w3-quarter" id="total-price-panel">
+						<p></p>
 					</div>
 					<div class="w3-quarter">
-						<form action="ConfirmOrder" id="order-form" method="post">
-							<input type="hidden" id="dpFlightNo1-field" name="dpFlightNo1">
-							<input type="hidden" id="dpFlightNo2-field" name="dpFlightNo2">
-							<input type="hidden" id="dpFlightNo3-field" name="dpFlightNo3">
-							<input type="hidden" id="rtFlightNo1-field" name="rtFlightNo1">
-							<input type="hidden" id="rtFlightNo2-field" name="rtFlightNo2">
-							<input type="hidden" id="rtFlightNo3-field" name="rtFlightNo3">
-							<input type="hidden" id="dpFlightSeatClass1-field" name="dpFlightSeatClass1">
-							<input type="hidden" id="dpFlightSeatClass2-field" name="dpFlightSeatClass2">
-							<input type="hidden" id="dpFlightSeatClass3-field" name="dpFlightSeatClass3">
-							<input type="hidden" id="rtFlightSeatClass1-field" name="rtFlightSeatClass1">
-							<input type="hidden" id="rtFlightSeatClass2-field" name="rtFlightSeatClass2">
-							<input type="hidden" id="rtFlightSeatClass3-field" name="rtFlightSeatClass3">
-						</form>
-						<button class="w3-button w3-round" type="submit" form="order-form">
+						<button class="w3-button w3-round" id="lock-operation-button" onclick="lockOperation()">
+							Lock Seat
+						</button>
+					</div>
+					<div class="w3-quarter">
+						<button class="w3-button w3-round" id="confirm-order-button" type="submit" form="order-form"
+								disabled>
 							Confirm Order
 						</button>
 					</div>
@@ -312,7 +378,7 @@
 											for (Map.Entry<Flight, Integer> entry : flights.entrySet()) {
 												Flight flight = entry.getKey();%>
 										{
-										flightNo : <%=flight.getNumber()%>,
+										flightNo : '<%=flight.getNumber()%>',
 										flightManufacture : '<%=flight.getAirplane().getManufacture()%>',
 										flightModel : '<%=flight.getAirplane().getModel()%>',
 										flightTime : <%=flight.getFlightTime()%>,
@@ -488,7 +554,7 @@
 								for (Map.Entry<Flight, Integer> entry : flights.entrySet()) {
 									Flight flight = entry.getKey();%>
 										{
-										flightNo : <%=flight.getNumber()%>,
+										flightNo : '<%=flight.getNumber()%>',
 										flightManufacture : '<%=flight.getAirplane().getManufacture()%>',
 										flightModel : '<%=flight.getAirplane().getModel()%>',
 										flightTime : <%=flight.getFlightTime()%>,

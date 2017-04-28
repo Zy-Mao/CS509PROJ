@@ -25,6 +25,6 @@
 	</script>
 </head>
 <body onload="window.setInterval(shua,1000);">
-<p id="hints" style="color:blue">10 Sec</p>
+<p id="hints" style="color:blue">5 Sec</p>
 </body>
 </html>

@@ -5,7 +5,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Created by Mao on 17/3/20.
+ * This class used to store the combination of flight and the seat class type.
+ *
+ * @author Mao
+ * @version 1.0
+ * @since 2017-03-20
+ *
+ *
+ *
  */
 public class Flights extends LinkedHashMap<Flight, Integer> {
 
@@ -17,7 +24,6 @@ public class Flights extends LinkedHashMap<Flight, Integer> {
 		}
 		return flightsList;
 	}
-
 
 	public int getStopTimes() {
 		return this.size() - 1;

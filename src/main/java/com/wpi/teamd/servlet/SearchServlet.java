@@ -19,7 +19,14 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * Created by mao on 2017/4/20.
+ * This class would process the search request from web page.
+ *
+ * @author Mao
+ * @version 1.0
+ * @since 2017-04-20
+ *
+ *
+ *
  */
 @WebServlet(name = "SearchServlet", urlPatterns={"/search"})
 public class SearchServlet extends HttpServlet {

@@ -6,7 +6,14 @@ import com.wpi.teamd.entity.Airplane;
 import java.util.ArrayList;
 
 /**
- * Created by mao on 2017/4/21.
+ * This class provide some service related with airplane.
+ *
+ * @author Mao
+ * @version 1.0
+ * @since 2017-04-21
+ *
+ *
+ *
  */
 public class AirplaneService {
 	private static ArrayList<Airplane> airplanePool = null;

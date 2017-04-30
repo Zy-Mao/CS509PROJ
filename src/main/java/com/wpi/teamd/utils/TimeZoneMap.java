@@ -6,8 +6,19 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * Created by KKarthur on 4/27/2017.
+ * This class holds values pertaining to a single Airport. Class member attributes
+ * are the same as defined by the CS509 server API and store values after conversion from
+ * XML received from the server to Java primitives. Attributes are accessed via getter and
+ * setter methods.
+ *
+ * @author Zheng
+ * @version 1.0
+ * @since 2017-04-27
+ *
+ *
+ *
  */
+
 public class TimeZoneMap {
 
 	public static String timeZoneId(double latitude, double longitude) {

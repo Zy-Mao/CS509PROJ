@@ -86,6 +86,13 @@ public class ServerInterface {
 		return airportPool;
 	}
 
+	/**
+	 * Return a collection of all the airplane from server
+	 * <p>
+	 * Retrieve the list of airplanes available to the specified ticketAgency via HTTPGet of the server
+	 *
+	 * @return collection of Airplane from server
+	 */
 	public static ArrayList<Airplane> getAirplanePool () {
 		URL url;
 		HttpURLConnection connection;
@@ -132,6 +139,15 @@ public class ServerInterface {
 		return airplanePool;
 	}
 
+	/**
+	 * Return a collection of all the Flight from server
+	 *
+	 * Retrieve the list of flights available to the specified ticketAgency via HTTPGet of the server
+	 * @param airportCode is a String for the code of airport
+	 * @param day is a Date instance for the flights
+	 * @param isDeparting is a boolean instance for whether the flight is departing
+	 * @return collection of Flight from server
+	 */
 	public static ArrayList<Flight> getFlightPool(String airportCode, Date day, Boolean isDeparting) {
 		URL url;
 		HttpURLConnection connection;
@@ -242,17 +258,17 @@ public class ServerInterface {
 			url = new URL(mUrlBase);
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
-			
+
 			String params = QueryFactory.unlock(teamName);
-			
+
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
-			
+
 			DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
 			writer.writeBytes(params);
 			writer.flush();
 			writer.close();
-		    
+
 			int responseCode = connection.getResponseCode();
 			System.out.println("\nSending 'POST' to unlock database");
 			System.out.println(("\nResponse Code : " + responseCode));
@@ -269,18 +285,22 @@ public class ServerInterface {
 
 				System.out.println(response.toString());
 			}
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			ex.printStackTrace();
 			return false;
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;
 		}
 		return true;
 	}
 
+	/**
+	 * Pack the list of flights and send the reserve request to the server
+	 *
+	 * @param flightsOrderList list of flights need to reserve
+	 * @return the result of request
+	 */
 	public static Boolean reserveSeat(LinkedHashMap<String, String> flightsOrderList) {
 		URL url;
 		HttpURLConnection connection;
@@ -306,6 +326,7 @@ public class ServerInterface {
 			System.out.println(("\nResponse Code : " + responseCode));
 			logger.debug("\nResponse Code : " + responseCode);
 
+			//if HTTP_NOT_MODIFIED 304 is returned, means the request is failed.
 			if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) {
 				return false;
 			}
@@ -324,6 +345,7 @@ public class ServerInterface {
 			}
 		} catch (IOException ex) {
 			ex.printStackTrace();
+			//if HTTP_PRECON_FAILED 412 returned, means request need lock
 			if (responseCode == HttpURLConnection.HTTP_PRECON_FAILED) {
 				return false;
 			}

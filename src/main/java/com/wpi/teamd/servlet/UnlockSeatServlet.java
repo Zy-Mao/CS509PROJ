@@ -12,7 +12,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Created by mao on 2017/4/20.
+ * This class would process the unlock request from web page.
+ *
+ * @author Mao
+ * @version 1.0
+ * @since 2017-04-20
+ *
+ *
+ *
  */
 @WebServlet(name = "UnlockSeatServlet", urlPatterns = {"/UnlockSeat"})
 public class UnlockSeatServlet extends HttpServlet {

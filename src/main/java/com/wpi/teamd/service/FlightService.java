@@ -9,8 +9,15 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
-/*
- * Created by mao on 2017/4/21.
+/**
+ * This class provide some service related with flight.
+ *
+ * @author Mao
+ * @version 1.0
+ * @since 2017-04-21
+ *
+ *
+ *
  */
 public class FlightService {
 	private static Logger logger = LogManager.getLogger(FlightService.class);

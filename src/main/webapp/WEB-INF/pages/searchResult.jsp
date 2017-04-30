@@ -42,7 +42,6 @@
 		}
 
 		function deselectReturnFlights() {
-//			$("#departure-flights-group").show();
 			$("#return-flights-group").show();
 			$('#selected-return-flights').hide();
 			$('#flights-summary-panel').hide();
@@ -133,7 +132,6 @@
 		}
 	</script>
 </head>
-<%--<body class="w3-light-grey">--%>
 
 <body>
 
@@ -377,11 +375,9 @@
 						<script>
 							function selectDepartureFlight(flightsStopTimes, flightDepartureTime, flightArrivalTime, flightTotalPrice, flightDurationInString, flightList) {
 //								$(".collapse-panel").collapse("hide");
-//								console.log(flightTotalPrice);
 								$('html, body').animate({
 									scrollTop: $('#search-result-title').offset().top
 								}, 700);
-//								console.log($(this), this.tagName, this.parents('.panel-heading').tagName);
 								$("#departure-flights-group").hide();
 								var loopCount = 0;
 								$('#selected-departure-flights').find(".selected-departure-flights-sub-panel").each(function () {
@@ -411,7 +407,6 @@
 									}
 									loopCount++;
 								});
-//								console.log($(this).attr('id'));
 								$("#departure-flights-stop-times-panel").text(flightsStopTimes + " Stop");
 								$("#departure-flights-time-panel").text(flightDepartureTime + "-" + flightArrivalTime);
 								$("#departure-duration-panel").text(flightDurationInString);
@@ -493,7 +488,6 @@
 			ArrayList<Flights> returnFlightsList = (ArrayList<Flights>) request.getAttribute("return-flights-list");
 			if (returnFlightsList != null) {
 				for (Flights flights : returnFlightsList) {
-
 		%>
 		<div class="panel-heading w3-card-2 collapse-panel" data-toggle="collapse"
 			 data-target="<%="#return-flight-" + count%>">

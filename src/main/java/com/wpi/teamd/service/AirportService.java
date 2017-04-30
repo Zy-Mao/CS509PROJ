@@ -1,12 +1,19 @@
 package com.wpi.teamd.service;
 
-import com.wpi.teamd.entity.Airport;
 import com.wpi.teamd.dao.ServerInterface;
+import com.wpi.teamd.entity.Airport;
 
 import java.util.ArrayList;
 
 /**
- * Created by mao on 2017/4/21.
+ * This class provide some service related with airport.
+ *
+ * @author Mao
+ * @version 1.0
+ * @since 2017-04-21
+ *
+ *
+ *
  */
 public class AirportService {
 	private static ArrayList<Airport> airportPool = null;

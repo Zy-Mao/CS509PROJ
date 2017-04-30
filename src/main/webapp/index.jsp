@@ -17,24 +17,16 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-	<%--<link rel="stylesheet" href="static/css/combo.select.css">--%>
-	<%--<script src="static/js/jquery.combo.select.js"></script>--%>
-
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
 
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
 
-	<!-- (Optional) Latest compiled and minified JavaScript translation files -->
-	<%--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/i18n/defaults-*.min.js"></script>--%>
 
 	<link href="static/css/icheck_minimal/grey.css" rel="stylesheet">
 	
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-	<!--  <link rel="stylesheet" href="/resources/demos/style.css">   -->
-
-	<%--<script src="your-path/icheck.js"></script>--%>
 
 </head>
 
@@ -72,14 +64,6 @@
 						<input class="w3-radio" type="radio" name="tr" value="2" <%= checked_tr.equals("2") ? "checked" : ""%>/>
 						<label>Round Trip</label>
 						<script>
-//							var return_date_input = $("#return-date")
-//							if ($(this).val() == "one-way") {
-//								return_date_input.prop("disabled", true);
-//								return_date_input.css("color", "grey");
-//							} else {
-//								return_date_input.prop("disabled", false);
-//								return_date_input.css("color", "black");
-//							}
 							$('input:radio').on('change', function(){
 								var return_date_input = $("#return-date");
 								if ($(this).val() == "1") {
@@ -275,7 +259,7 @@
 				var dep_air = document.getElementById("depart_airport").value;
 				var arr_air = document.getElementById("arrival_airport").value;
 
-				if (dep_air === arr_air || dep_air == "" || dep_air == "") {
+				if (dep_air === arr_air || dep_air == "" || arr_air == "") {
 					alert("Departure Airport and Arrival Airport shouldn't be the same!");
 				}
 				

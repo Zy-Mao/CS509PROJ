@@ -5,7 +5,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Created by mao on 28/04/2017.
+ * Unit test class for DaoAirplane class.
+ *
+ * @author Mao
+ * @version 1.0
+ * @since 2017-04-28
+ *
+ *
+ *
  */
 public class DaoAirplaneTest {
 	@Before

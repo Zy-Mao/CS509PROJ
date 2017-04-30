@@ -6,7 +6,14 @@ import org.junit.Test;
 import java.util.Date;
 
 /**
- * Created by mao on 28/04/2017.
+ * Unit test class for TimeZoneMapF class.
+ *
+ * @author Mao
+ * @version 1.0
+ * @since 2017-04-28
+ *
+ *
+ *
  */
 public class TimeZoneMapTest {
 	@Test

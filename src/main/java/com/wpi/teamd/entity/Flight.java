@@ -7,7 +7,17 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * Created by Mao on 17/3/19.
+ * This class holds values pertaining to a single Flight. Class member attributes
+ * are the same as defined by the CS509 server API and store values after conversion from
+ * XML received from the server to Java primitives. Attributes are accessed via getter and
+ * setter methods.
+ *
+ * @author Mao
+ * @version 1.0
+ * @since 2017-03-19
+ *
+ *
+ *
  */
 public class Flight {
     private Airplane airplane;
@@ -22,27 +32,43 @@ public class Flight {
     private double coachClassPrice;
     private int coachClassSeats;
 
-    public Flight() {
+	/**
+	 * Default constructor
+	 * <p>
+	 * Constructor without params. Requires object fields to be explicitly
+	 * set using setter methods
+	 *
+	 * @pre None
+	 * @post member attributes are initialized to invalid default values
+	 */
+	public Flight() {
 
-    }
+	}
 
-    public Flight(Airplane airplane, int flightTime, String number,
-                  Airport departAirport, Date departTime,
-                  Airport arrivalAirport, Date arrivalTime,
-                  double firstClassPrice, int firstClassSeats,
-                  double coachClassPrice, int coachClassSeats) {
-        this.airplane = airplane;
-        this.flightTime = flightTime;
-        this.number = number;
-        this.departAirport = departAirport;
-        this.departTime = departTime;
-        this.arrivalAirport = arrivalAirport;
-        this.arrivalTime = arrivalTime;
-        this.firstClassPrice = firstClassPrice;
-        this.firstClassSeats = firstClassSeats;
-        this.coachClassPrice = coachClassPrice;
-        this.coachClassSeats = coachClassSeats;
-    }
+	/**
+	 * Initializing constructor.
+	 * <p>
+	 * All attributes are initialized with input values
+	 *
+	 * @throws IllegalArgumentException is any parameter is invalid
+	 */
+	public Flight(Airplane airplane, int flightTime, String number,
+				  Airport departAirport, Date departTime,
+				  Airport arrivalAirport, Date arrivalTime,
+				  double firstClassPrice, int firstClassSeats,
+				  double coachClassPrice, int coachClassSeats) {
+		this.airplane = airplane;
+		this.flightTime = flightTime;
+		this.number = number;
+		this.departAirport = departAirport;
+		this.departTime = departTime;
+		this.arrivalAirport = arrivalAirport;
+		this.arrivalTime = arrivalTime;
+		this.firstClassPrice = firstClassPrice;
+		this.firstClassSeats = firstClassSeats;
+		this.coachClassPrice = coachClassPrice;
+		this.coachClassSeats = coachClassSeats;
+	}
 
     public boolean isValid() {
         if (airplane == null || !airplane.isValid())
